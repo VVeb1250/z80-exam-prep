@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>แผนที่เตรียมสอบ Z80</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">REFERENCE 0001 · แผนที่ทั้งคอร์ส</p>
+    <h1>เตรียมสอบ 6 ข้อ<br>เรียนแยกทีละข้อ</h1>
+    <p class="lead">บท 0 เก็บเฉพาะพื้นฐานร่วม หลังจากนั้นแต่ละหน้าจะอยู่ใต้ข้อสอบเดียว ไม่ข้ามไปสอนหรือทดสอบเนื้อหาของข้ออื่น</p>
+  </header>
+
+  <section>
+    <h2>เส้นทางเรียน</h2>
+    <div class="roadmap">
+      <div class="road-item"><div class="road-no">00</div><div><a href="../lessons/0001-z80-three-buses.html"><strong>พื้นฐานร่วม: บัส + active-low</strong></a><br><span class="muted">ภาษาที่ต้องใช้ซ้ำในข้อ 1–6</span></div><span class="status ready">ผ่านรีวิว</span></div>
+      <div class="road-item"><div class="road-no">01</div><div><a href="../lessons/0002-full-memory-decoding.html"><strong>ข้อ 1: วาดวงจรรวม Memory + I/O</strong></a><br><span class="muted">รูปคำตอบเดียว แล้วซูม Memory และ I/O ภายในบทเดียว</span></div><span class="status ready">พร้อมเรียน</span></div>
+      <div class="road-item"><div class="road-no">02</div><div><a href="../lessons/0003-access-and-foldback.html"><strong>ข้อ 2: Access + Foldback</strong></a><br><span class="muted">อธิบายการเข้าถึงแต่ละชิปและ Address alias</span></div><span class="status ready">พร้อมเรียน</span></div>
+      <div class="road-item"><div class="road-no">03</div><div><a href="../lessons/0006-q3-assembly.html"><strong>ข้อ 3: Z80 Assembly</strong></a><br><span class="muted">เดินโค้ดสามแลป แล้วแปลงพฤติกรรมเป็นคำสั่ง</span></div><span class="status ready">พร้อมเรียน</span></div>
+      <div class="road-item"><div class="road-no">04</div><div><a href="../lessons/0007-q4-opcode-address.html"><strong>ข้อ 4: Opcode + Address</strong></a><br><span class="muted">จัดวางไบต์และคำนวณ Address ทีละคำสั่ง</span></div><span class="status ready">พร้อมเรียน</span></div>
+      <div class="road-item"><div class="road-no">05</div><div><a href="../lessons/0004-q5-timing-diagram.html"><strong>ข้อ 5: Timing Diagram</strong></a><br><span class="muted">วาด 4 Instruction Cycles พร้อมคำอธิบาย</span></div><span class="status ready">พร้อมเรียน</span></div>
+      <div class="road-item"><div class="road-no">06</div><div><a href="../lessons/0005-q6-ram-first.html"><strong>ข้อ 6: RAM-first redesign</strong></a><br><span class="muted">สลับแผนที่ RAM/ROM และวิเคราะห์ผล</span></div><span class="status ready">พร้อมเรียน</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>ข้อสอบถามอะไรจริง ๆ</h2>
+    <div class="card" style="overflow-x:auto">
+      <table class="signal-table">
+        <thead><tr><th>ข้อ</th><th>ของส่ง</th><th>ทักษะแกน</th><th>หน้าในเอกสาร</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>รูปวงจรครบสาย</td><td>Bus + decoder + chip pins</td><td>25–26, 59–66</td></tr>
+          <tr><td>2</td><td>คำอธิบายการเข้าถึง</td><td>Address bits + chip select + foldback</td><td>59–61</td></tr>
+          <tr><td>3</td><td>Z80 Assembly</td><td>เลือกคำสั่งและ addressing mode</td><td>30–48</td></tr>
+          <tr><td>4</td><td>Address + Opcode</td><td>จำนวนไบต์และ little-endian</td><td>30–48</td></tr>
+          <tr><td>5</td><td>Timing Diagram</td><td>M-cycle + T-state + control signals</td><td>49–56, 63–65</td></tr>
+          <tr><td>6</td><td>แผนที่ระบบใหม่</td><td>จัดช่วงใหม่ + reset consequence</td><td>59–61</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card warning" style="margin-top:16px">
+      <h3>สถานะข้อ 1</h3>
+      <p><strong>พื้นฐานร่วม:</strong> ผ่านรีวิวแล้ว แต่ไม่นับเป็นข้อ 1</p>
+      <p><strong>ข้อ 1 รวมแล้ว:</strong> รูปคำตอบรวม, ส่วน Memory, ส่วน I/O และ checklist อยู่ในหน้าเดียว เพื่อให้ฝึกวาดทั้งระบบได้เหมือนสิ่งที่ต้องส่งในข้อสอบ</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>สูตรที่ใช้ตลอดคอร์ส</h2>
+    <div class="grid-2">
+      <div class="card"><h3>จำนวนตำแหน่ง</h3><p class="big-number">2ⁿ</p><p>ใช้ Address ภายใน <span class="mono">n</span> เส้น เช่น 4K = 2¹² → A11–A0</p></div>
+      <div class="card"><h3>ปลายช่วง</h3><p class="big-number">Start + Size − 1</p><p>เช่น 1000H + 1000H − 1 = 1FFFH</p></div>
+      <div class="card"><h3>จำนวน Foldback copies</h3><p class="big-number">2ᵏ</p><p><span class="mono">k</span> คือจำนวนบิต Address ระดับสูงที่ถูกละเลยในการ decode</p></div>
+      <div class="card"><h3>Address คำสั่งถัดไป</h3><p class="big-number">เดิม + จำนวนไบต์</p><p>ไล่ Opcode operand ทีละไบต์ ห้ามเพิ่มตามจำนวนบรรทัด</p></div>
+    </div>
+  </section>
+
+  <section class="card warning">
+    <h2>จุดที่ยังต้องได้ข้อมูลเพิ่ม</h2>
+    <p>คำถามข้อ 3 ที่ส่งมายังเว้นรายละเอียดว่าให้โปรแกรมทำอะไร บทเรียนจึงไม่เดาข้อสอบจริง แต่ครอบคลุมหลักฐานจากแลปทั้งสามแบบแล้ว: บวก Register, อ่าน–บวก–เขียน Memory และ LED loop เมื่อมีโจทย์เต็มจึงค่อยแทนค่าตามพฤติกรรมที่กำหนด</p>
+  </section>
+
+  <footer class="footer">
+    <a href="../lessons/0001-z80-three-buses.html">เริ่มบทเรียน 0001</a> ·
+    <a href="https://www.zilog.com/docs/z80/um0080.pdf">คู่มือ Z80 จากผู้ผลิต</a>
+  </footer>
+</main>
+</body>
+</html>

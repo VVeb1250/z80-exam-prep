@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 4 — Opcode และ Address</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 4 · OPCODE + ADDRESS · 25 คะแนน</p>
+    <h1>วางไบต์ลง Memory<br>ทีละคำสั่ง</h1>
+    <p class="lead">ใช้โค้ดจากข้อ 3 แล้วตอบสามอย่างต่อบรรทัด: เริ่มที่ Address ใด, Opcode/Operand เป็นไบต์อะไร และคำสั่งถัดไปเริ่มที่ใด</p>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#rules">กฎ 4 ข้อ</a>
+    <a href="#lab">Opcode Lab</a>
+    <a href="#relative">JR ย้อนหลัง</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="rules">
+    <h2>กฎที่ใช้ซ้ำทุกบรรทัด</h2>
+    <div class="grid-2 opcode-rules">
+      <article class="card"><span class="road-no">1</span><h3>ORG กำหนด Address แรก</h3><p><span class="mono">ORG 2000H</span> ทำให้คำสั่ง CPU ตัวแรกเริ่มที่ 2000H แต่ ORG ไม่มี Opcode</p></article>
+      <article class="card"><span class="road-no">2</span><h3>Address ถัดไป = ปัจจุบัน + ขนาด</h3><p>คำสั่ง 2 bytes ที่ 2000H ใช้ 2000H–2001H ดังนั้นตัวถัดไปเริ่ม 2002H</p></article>
+      <article class="card"><span class="road-no">3</span><h3>เลข 16-bit เก็บ Low ก่อน</h3><p><span class="mono">LD HL,2100H</span> เป็น <span class="mono">21 00 21</span> ไม่ใช่ 21 21 00</p></article>
+      <article class="card"><span class="road-no">4</span><h3>JR เก็บระยะ ไม่เก็บ Address</h3><p><span class="mono">e = target − Address หลัง JR</span> แล้วแปลงค่าลบเป็น 2's complement 8-bit</p></article>
+    </div>
+    <div class="directive-strip"><span class="mono">CPU "z80.tbl"</span><span class="mono">HOF "INT8"</span><span class="mono">ORG</span><span class="mono">END</span><b>Assembler directives — ไม่กิน Address และไม่มี Opcode</b></div>
+  </section>
+
+  <section id="lab">
+    <h2>เลือกแลป แล้วเดินทีละคำสั่ง</h2>
+    <div class="opcode-lab" data-opcode-lab>
+      <div class="instruction-tabs opcode-tabs">
+        <button type="button" class="instruction-tab is-active" data-op-program="register">A · Register</button>
+        <button type="button" class="instruction-tab" data-op-program="memory">B · Memory</button>
+        <button type="button" class="instruction-tab" data-op-program="led">C · LED Loop</button>
+      </div>
+      <div class="assembly-toolbar">
+        <div class="timing-step-buttons"><button type="button" data-op-prev>← ย้อน</button><button type="button" data-op-next>ถัดไป →</button></div>
+        <strong><span data-op-field="programName">Lab A · Register</span> · <span data-op-field="step">1/8</span></strong>
+      </div>
+      <div class="opcode-workspace">
+        <div class="opcode-list">
+          <div class="opcode-list-head"><span>Address</span><span>Assembly</span><span>Bytes</span></div>
+          <div data-op-list></div>
+        </div>
+        <div class="opcode-detail">
+          <div class="opcode-focus">
+            <small>คำสั่งปัจจุบัน</small>
+            <strong class="mono" data-op-field="asm">LD A,01H</strong>
+            <div class="byte-chips" data-op-bytes></div>
+          </div>
+          <div class="address-equation">
+            <div><small>เริ่ม</small><b class="mono" data-op-field="address">2000H</b></div><span>+</span><div><small>ขนาด</small><b data-op-field="size">2 bytes</b></div><span>=</span><div><small>คำสั่งถัดไป</small><b class="mono" data-op-field="next">2002H</b></div>
+          </div>
+          <div class="card opcode-explain"><span class="phase-badge" data-op-field="rule">Opcode + 8-bit data</span><p data-op-field="why">3EH คือ LD A,n และ 01H คือข้อมูล n</p></div>
+          <div class="relative-calc" data-relative-panel hidden>
+            <strong>คำนวณ Displacement ของ JR</strong>
+            <div><span>Target</span><b class="mono" data-op-field="target">200BH</b><span>− PC หลัง JR</span><b class="mono" data-op-field="base">2010H</b><span>=</span><b data-op-field="delta">−5</b><span>→ 8-bit</span><b class="mono" data-op-field="twos">FBH</b></div>
+          </div>
+        </div>
+      </div>
+      <div class="byte-tape-wrap" tabindex="0" aria-label="Memory bytes เลื่อนซ้ายขวาได้">
+        <div class="byte-tape" data-byte-tape></div>
+      </div>
+      <p class="scroll-hint">← บนโทรศัพท์ลากแถบ Memory ซ้าย–ขวาได้ แล้วแตะ byte เพื่อเลือกคำสั่ง →</p>
+    </div>
+  </section>
+
+  <section id="relative">
+    <h2>จุดที่มักพลาด: JR LOOP ของ Lab LED</h2>
+    <div class="relative-demo card">
+      <div class="relative-line"><span class="target-mark">200BH<br><small>LOOP</small></span><span class="jump-arc">←──────── −5 bytes ────────</span><span class="base-mark">2010H<br><small>PC หลัง JR</small></span></div>
+      <div class="relative-steps"><b>200BH − 2010H = −5</b><span>8-bit มี 256 ค่า</span><b>256 − 5 = 251 = FBH</b><strong class="mono">JR LOOP → 18 FB</strong></div>
+      <p>ห้ามลบจาก Address ของ Opcode <span class="mono">200EH</span> เพราะ Z80 คำนวณ Relative จาก PC หลังอ่านคำสั่ง 2 bytes แล้ว คือ <span class="mono">2010H</span></p>
+    </div>
+  </section>
+
+  <section id="quiz" class="quiz compact-quiz">
+    <h2>ดึงจากความจำ</h2>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="Z80 เก็บ Operand 16-bit แบบ little-endian จึงวาง low byte 00H ก่อน high byte 21H">
+      <h3>1) LD HL,2100H มี bytes ใด?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">21 21 00</button><button class="choice mono" data-choice="B">00 21 21</button><button class="choice mono" data-choice="C">21 00 21</button><button class="choice mono" data-choice="D">21 00</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="LD A,01H ยาว 2 bytes ใช้ 2000H และ 2001H ดังนั้นคำสั่งถัดไปเริ่ม 2002H">
+      <h3>2) คำสั่ง 2 bytes เริ่ม 2000H ตัวถัดไปเริ่มไหน?</h3>
+      <div class="choices"><button class="choice" data-choice="A">2001H</button><button class="choice" data-choice="B">2002H</button><button class="choice" data-choice="C">2003H</button><button class="choice" data-choice="D">2010H</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="D" data-explain="JR ที่ 200EH จบที่ 2010H และ LOOP อยู่ 200BH ระยะจึงเป็น −5 หรือ FBH">
+      <h3>3) JR LOOP ใน Lab C ใช้ displacement ใด?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">05H</button><button class="choice mono" data-choice="B">F5H</button><button class="choice mono" data-choice="C">FDH</button><button class="choice mono" data-choice="D">FBH</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="CPU, HOF, ORG และ END ควบคุม assembler จึงไม่สร้าง Opcode bytes ในโปรแกรมนี้">
+      <h3>4) บรรทัดใดไม่มี Opcode?</h3>
+      <div class="choices"><button class="choice" data-choice="A">ORG 2000H</button><button class="choice" data-choice="B">XOR A</button><button class="choice" data-choice="C">INC A</button><button class="choice" data-choice="D">HALT</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <a href="0006-q3-assembly.html">← ข้อ 3: Assembly</a> · อ้างอิงเอกสารรายวิชา หน้า 31–48 ·
+    <a href="0004-q5-timing-diagram.html">ข้อ 5: Timing Diagram →</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/opcode-lab.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

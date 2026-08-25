@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 6 — RAM ก่อน แล้วตามด้วย ROM</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 6 · RAM FIRST · 10 คะแนน</p>
+    <h1>สลับเพียงสองสาย<br>แผนที่ก็สลับทันที</h1>
+    <p class="lead">ใช้วงจรเดิมจากข้อ 1 แต่ต่อ Y0 ไป RAM และ Y1 ไป ROM แล้วทำซ้ำการอธิบายการเข้าถึงกับ Foldback แบบข้อ 2</p>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#swap">จุดที่สลับ</a>
+    <a href="#access">ทดลอง Address</a>
+    <a href="#foldback">Foldback</a>
+    <a href="#answer">คำตอบพร้อมเขียน</a>
+  </nav>
+
+  <section id="swap">
+    <h2>เปลี่ยนเฉพาะปลายสาย Chip Select</h2>
+    <div class="swap-overview">
+      <article class="card swap-map-card">
+        <small>แบบเดิม</small>
+        <div class="swap-map"><div class="rom"><b>0000H–0FFFH</b><span>Y0 → ROM</span></div><div class="ram"><b>1000H–1FFFH</b><span>Y1 → RAM</span></div></div>
+      </article>
+      <div class="swap-symbol" aria-hidden="true">⇄</div>
+      <article class="card swap-map-card is-new">
+        <small>ข้อ 6</small>
+        <div class="swap-map"><div class="ram"><b>0000H–0FFFH</b><span>Y0 → RAM</span></div><div class="rom"><b>1000H–1FFFH</b><span>Y1 → ROM</span></div></div>
+      </article>
+    </div>
+    <div class="card callout"><p><strong>สิ่งที่ไม่เปลี่ยน:</strong> A11–A0 ยังเข้าขา Address ของทั้งสองชิป, D7–D0 ยังเป็น Data bus ร่วม, RAM ยังรับ /OE←/RD และ /WE←/WR ส่วน ROM รับ /OE←/RD</p></div>
+  </section>
+
+  <section id="access">
+    <h2>เลือก Address แล้วตามสายไปถึงชิป</h2>
+    <div class="q6-lab" data-q6-lab>
+      <div class="q6-tabs" role="group" aria-label="เลือกตัวอย่าง Address">
+        <button type="button" class="instruction-tab is-active" data-q6-choice="ram">RAM · 0123H</button>
+        <button type="button" class="instruction-tab" data-q6-choice="rom">ROM · 1ABCH</button>
+      </div>
+      <div class="q6-schematic-wrap" tabindex="0" aria-label="วงจร RAM ก่อน ROM เลื่อนซ้ายขวาได้">
+        <svg class="q6-schematic" viewBox="0 0 1200 590" role="img" aria-labelledby="q6-title q6-desc">
+          <title id="q6-title">วงจร Z80 ที่เริ่มด้วย RAM แล้วตามด้วย ROM</title>
+          <desc id="q6-desc">A15 ถึง A12 เข้า 74x154 โดย Y0 ต่อ RAM และ Y1 ต่อ ROM ส่วน A11 ถึง A0 และ Data bus ต่อเข้าชิปโดยตรง</desc>
+          <defs>
+            <marker id="q6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+            <marker id="q6d" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7b3fa0"/></marker>
+            <marker id="q6c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ad3152"/></marker>
+            <marker id="q6s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
+          </defs>
+          <rect x="8" y="8" width="1184" height="574" rx="22" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+
+          <rect x="30" y="230" width="180" height="300" rx="17" fill="#102e3b"/>
+          <text x="120" y="272" text-anchor="middle" font-size="25" font-weight="900" fill="white" style="fill:white">Z80 CPU</text>
+          <text x="190" y="322" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">A15–A0</text>
+          <text x="190" y="382" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+          <text x="190" y="442" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
+          <text x="190" y="482" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/RD</text>
+          <text x="190" y="522" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/WR</text>
+
+          <line x1="210" y1="325" x2="1160" y2="325" stroke="#087e8b" stroke-width="5" marker-end="url(#q6a)"/>
+          <line x1="210" y1="385" x2="1160" y2="385" stroke="#7b3fa0" stroke-width="5" marker-start="url(#q6d)" marker-end="url(#q6d)"/>
+          <line x1="210" y1="440" x2="1160" y2="440" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
+          <line x1="210" y1="480" x2="1160" y2="480" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
+          <line x1="210" y1="520" x2="900" y2="520" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
+          <text x="230" y="310" font-size="15" font-weight="900" fill="#087e8b" style="fill:#087e8b">ADDRESS BUS</text>
+          <text x="230" y="370" font-size="15" font-weight="900" fill="#7b3fa0" style="fill:#7b3fa0">DATA BUS</text>
+
+          <rect x="300" y="45" width="225" height="175" rx="15" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+          <text x="412" y="83" text-anchor="middle" font-size="22" font-weight="900">74x154</text>
+          <text x="412" y="118" text-anchor="middle" font-size="15" class="mono-svg">A15–A12 → A3–A0</text>
+          <text x="412" y="148" text-anchor="middle" font-size="15" class="mono-svg">/MREQ → Enable</text>
+          <text x="502" y="178" text-anchor="end" font-size="15" class="mono-svg">Y0</text>
+          <text x="502" y="207" text-anchor="end" font-size="15" class="mono-svg">Y1</text>
+
+          <rect data-q6-device="ram" x="650" y="45" width="210" height="175" rx="15" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
+          <text x="755" y="82" text-anchor="middle" font-size="23" font-weight="900">RAM 4K × 8</text>
+          <text x="755" y="112" text-anchor="middle" font-size="15" class="mono-svg">0000H–0FFFH</text>
+          <text x="670" y="145" font-size="14" class="mono-svg">/CE ← Y0</text>
+          <text x="670" y="174" font-size="14" class="mono-svg">/OE←/RD · /WE←/WR</text>
+          <text x="755" y="204" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
+
+          <rect data-q6-device="rom" x="930" y="45" width="210" height="175" rx="15" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
+          <text x="1035" y="82" text-anchor="middle" font-size="23" font-weight="900">ROM 4K × 8</text>
+          <text x="1035" y="112" text-anchor="middle" font-size="15" class="mono-svg">1000H–1FFFH</text>
+          <text x="950" y="145" font-size="14" class="mono-svg">/CE ← Y1</text>
+          <text x="950" y="174" font-size="14" class="mono-svg">/OE ← /RD</text>
+          <text x="1035" y="204" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
+
+          <path data-q6-select="ram" d="M525 175H650" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#q6s)"/>
+          <text x="588" y="162" text-anchor="middle" font-size="14" class="mono-svg" fill="#4774b8" style="fill:#4774b8">Y0 → /CE_RAM</text>
+          <path data-q6-select="rom" d="M525 205H565V25H900V175H930" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#q6s)"/>
+          <text x="725" y="20" text-anchor="middle" font-size="14" class="mono-svg" fill="#4774b8" style="fill:#4774b8">Y1 → /CE_ROM</text>
+
+          <path d="M360 325V220" fill="none" stroke="#087e8b" stroke-width="4" marker-end="url(#q6a)"/>
+          <circle cx="360" cy="325" r="5" fill="#087e8b"/><text x="370" y="250" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A15–A12</text>
+          <path d="M700 325V220" fill="none" stroke="#087e8b" stroke-width="4" marker-end="url(#q6a)"/>
+          <circle cx="700" cy="325" r="5" fill="#087e8b"/><text x="710" y="250" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0</text>
+          <path d="M980 325V220" fill="none" stroke="#087e8b" stroke-width="4" marker-end="url(#q6a)"/>
+          <circle cx="980" cy="325" r="5" fill="#087e8b"/><text x="990" y="250" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0</text>
+          <path d="M800 220V385" fill="none" stroke="#fffef9" stroke-width="11"/><path d="M800 220V385" fill="none" stroke="#7b3fa0" stroke-width="4" marker-start="url(#q6d)" marker-end="url(#q6d)"/><circle cx="800" cy="385" r="5" fill="#7b3fa0"/>
+          <path d="M1090 220V385" fill="none" stroke="#fffef9" stroke-width="11"/><path d="M1090 220V385" fill="none" stroke="#7b3fa0" stroke-width="4" marker-start="url(#q6d)" marker-end="url(#q6d)"/><circle cx="1090" cy="385" r="5" fill="#7b3fa0"/>
+
+          <path d="M510 440V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M510 440V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="510" cy="440" r="5" fill="#ad3152"/>
+          <path d="M830 480V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M830 480V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="830" cy="480" r="5" fill="#ad3152"/>
+          <path d="M850 520V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M850 520V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="850" cy="520" r="5" fill="#ad3152"/>
+          <path d="M1120 480V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M1120 480V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="1120" cy="480" r="5" fill="#ad3152"/>
+
+          <text x="600" y="565" text-anchor="middle" font-size="17" font-weight="900">Address ปัจจุบัน: <tspan class="mono-svg" data-q6-field="address">0123H</tspan> · A15–A12=<tspan class="mono-svg" data-q6-field="high">0000</tspan> · offset=<tspan class="mono-svg" data-q6-field="offset">123H</tspan></text>
+        </svg>
+      </div>
+      <p class="scroll-hint">← บนโทรศัพท์ลากวงจรซ้าย–ขวาได้ รูปจะไม่ถูกบีบหรือทำให้สายทับกัน →</p>
+      <div class="q6-result">
+        <div><small>Decoder</small><strong data-q6-field="decoder">Y0=0</strong></div>
+        <div><small>ชิปที่ถูกเลือก</small><strong data-q6-field="device">RAM</strong></div>
+        <div><small>ตำแหน่งในชิป</small><strong data-q6-field="offsetCard">123H</strong></div>
+        <div><small>Control ตอนอ่าน</small><strong data-q6-field="control">/MREQ=0, /RD=0</strong></div>
+      </div>
+      <div class="card q6-trace">
+        <b data-q6-field="traceTitle">0123H → RAM</b>
+        <p data-q6-field="trace">A15–A12=0000 ทำให้ Y0 active จึงกด /CE_RAM ต่ำ; A11–A0=123H เลือก byte 123H ภายใน RAM</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="foldback">
+    <h2>Foldback เปลี่ยนชื่อชิป แต่หลักเดิม</h2>
+    <div class="grid-2">
+      <article class="card"><h3>Full decoding — คำตอบหลัก</h3><p>A15–A12 เข้า 74x154 ครบ ดังนั้น Y0 และ Y1 ตอบเฉพาะ 0xxxH กับ 1xxxH ตามลำดับ <strong>ไม่เกิด Memory Foldback</strong></p></article>
+      <article class="card"><h3>ถ้าโจทย์ถอด A15–A13</h3><p>เหลือ A12 เลือกชิป จึงเกิด 2³=8 สำเนา: RAM อยู่ทุกช่วงที่ A12=0 ส่วน ROM อยู่ทุกช่วงที่ A12=1</p></article>
+    </div>
+    <div class="block-ruler-scroll q6-fold-scroll" tabindex="0" aria-label="แผนที่ Foldback ของ RAM ก่อน ROM">
+      <div class="block-ruler q6-fold-ruler">
+        <div class="block-cell ram"><strong>0xxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>1xxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>2xxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>3xxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>4xxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>5xxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>6xxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>7xxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>8xxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>9xxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>Axxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>Bxxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>Cxxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>Dxxx</strong><small>ROM</small></div>
+        <div class="block-cell ram"><strong>Exxx</strong><small>RAM</small></div><div class="block-cell rom"><strong>Fxxx</strong><small>ROM</small></div>
+      </div>
+    </div>
+    <div class="card warning"><p><strong>ข้อควรสังเกต:</strong> หลัง Reset Z80 เริ่ม fetch ที่ 0000H ดังนั้นแบบ RAM-first จะอ่าน RAM ก่อน ไม่ใช่ ROM หากทำระบบจริงต้องมีข้อมูลเริ่มต้นใน RAM หรือมีวงจรสลับแผนที่ตอนบูต</p></div>
+  </section>
+
+  <section id="answer">
+    <h2>คำตอบข้อ 6 พร้อมเขียน</h2>
+    <div class="card exam-answer">
+      <p><strong>RAM:</strong> เมื่อ Z80 ส่ง 0123H จะได้ A15–A12=0000 ทำให้ decoder ส่ง Y0=0 ไปยัง /CE_RAM ส่วน A11–A0=123H เลือกตำแหน่ง 123H ภายใน RAM การอ่านใช้ /MREQ=0 และ /RD=0; การเขียนใช้ /MREQ=0 และ /WR=0</p>
+      <p><strong>ROM:</strong> เมื่อ Z80 ส่ง 1ABCH จะได้ A15–A12=0001 ทำให้ decoder ส่ง Y1=0 ไปยัง /CE_ROM ส่วน A11–A0=ABCH เลือกตำแหน่ง ABCH ภายใน ROM และอ่านด้วย /MREQ=0, /RD=0</p>
+      <p><strong>I/O:</strong> การเข้าถึง Input 84H และ Output 07H ไม่เปลี่ยน เพราะใช้ /IORQ ร่วมกับ /RD หรือ /WR ไม่ได้ขึ้นกับลำดับ RAM/ROM</p>
+      <p><strong>Foldback:</strong> วงจรนี้ decode A15–A12 ครบ จึงไม่มี Memory Foldback; หากละ A15–A13 จะเกิดสำเนา 2³=8 ชุด</p>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <a href="0004-q5-timing-diagram.html">← ข้อ 5: Timing Diagram</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/ram-first.js"></script>
+</body>
+</html>

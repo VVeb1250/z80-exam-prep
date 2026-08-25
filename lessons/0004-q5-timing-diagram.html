@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 5 — Timing Diagram 4 Instruction Cycles</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 5 · TIMING DIAGRAM · 4 INSTRUCTION CYCLES</p>
+    <h1>เลื่อนเข็มเวลา<br>ดูทุกเหตุการณ์</h1>
+    <p class="lead">ใช้คำสั่ง 4 ตัวแทนการติดต่อครบสี่แบบ: Memory Read, Memory Write, I/O Read และ I/O Write โดยแบ่งแต่ละ T-state เป็นต้น–กลาง–ปลายช่วง</p>
+    <div class="score-strip">
+      <span class="pill">ข้อ 5 · 20 คะแนน</span>
+      <span class="pill">4 Instructions</span>
+      <span class="pill">A · D · Control ครบ</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#set">ชุดข้อมูล</a>
+    <a href="#lab">Timing Lab</a>
+    <a href="#read">วิธีอ่าน</a>
+    <a href="#draw">วิธีวาดตอบ</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="set">
+    <h2>กำหนดข้อมูลเองให้ครบก่อนวาด</h2>
+    <div class="cycle-summary">
+      <article class="card"><strong>1 · Memory Read</strong><br><span class="mono">2000: 7E</span><br><span class="mono">LD A,(HL)</span><br>HL=1120H, [1120]=5AH</article>
+      <article class="card"><strong>2 · Memory Write</strong><br><span class="mono">2001: 77</span><br><span class="mono">LD (HL),A</span><br>HL=1120H, A=5AH</article>
+      <article class="card"><strong>3 · I/O Read</strong><br><span class="mono">2002: DB 84</span><br><span class="mono">IN A,(84H)</span><br>A เดิม=5AH, Input=C3H</article>
+      <article class="card"><strong>4 · I/O Write</strong><br><span class="mono">2004: D3 07</span><br><span class="mono">OUT (07H),A</span><br>A=C3H</article>
+    </div>
+    <div class="card warning" style="margin-top:14px">
+      <p><strong>เหตุผลที่ Address ของ I/O เป็น 16 บิตในรูป:</strong> สำหรับ <span class="mono">IN/OUT (n),A</span> ค่า Port อยู่บน A7–A0 ส่วนค่า A ก่อนทำคำสั่งอยู่บน A15–A8 ดังนั้นตัวอย่างได้ 5A84H และ C307H แม้อุปกรณ์ทั่วไปจะ decode เฉพาะ A7–A0</p>
+    </div>
+  </section>
+
+  <section id="lab">
+    <h2>Timing Lab — รูปเดียวสลับได้ 4 Instruction Cycles</h2>
+    <div class="timing-lab" data-timing-lab>
+      <div class="instruction-tabs" aria-label="เลือกคำสั่ง">
+        <button class="instruction-tab is-active" type="button" data-instruction="memRead">1 · Memory Read</button>
+        <button class="instruction-tab" type="button" data-instruction="memWrite">2 · Memory Write</button>
+        <button class="instruction-tab" type="button" data-instruction="ioRead">3 · I/O Read</button>
+        <button class="instruction-tab" type="button" data-instruction="ioWrite">4 · I/O Write</button>
+      </div>
+      <div class="timing-controls">
+        <div class="timing-step-buttons">
+          <button type="button" data-prev>← ย้อน</button>
+          <button type="button" data-next>ถัดไป →</button>
+        </div>
+        <div>
+          <label for="timing-state"><strong data-timing-field="instruction">1 · LD A,(HL)</strong> · จุดเวลา <span class="mono" data-timing-field="step">1/21</span></label>
+          <input id="timing-state" data-time-input type="range" min="0" max="20" value="0" step="1">
+        </div>
+      </div>
+      <div class="timing-stage">
+        <div class="timing-wave-pane">
+          <div class="timing-scroll" tabindex="0" aria-label="Timing diagram เลื่อนซ้ายขวาได้">
+            <div class="timing-grid" data-timing-grid style="--timing-cols:7"></div>
+          </div>
+          <p class="scroll-hint">← ลาก waveform ซ้าย–ขวาได้; เมื่อใช้ slider ตารางจะเลื่อนไปยัง T-state ที่เลือกเอง →</p>
+        </div>
+        <aside class="timing-readout" aria-live="polite">
+          <div class="timing-now">
+            <small>ตำแหน่งปัจจุบัน</small>
+            <strong data-timing-field="position">M1 · Opcode Fetch · T1 · ต้นช่วง</strong>
+            <p><span class="mono" data-timing-field="code">7EH</span> · <span data-timing-field="total">7T = M1(4T) + Memory Read(3T)</span></p>
+            <div class="timing-signals" data-timing-field="signals"></div>
+          </div>
+          <div class="timing-explain">
+            <div class="moment-heading"><span class="phase-badge" data-timing-field="phase">ต้นช่วง</span><span data-timing-field="summary">เริ่มอ่าน Opcode</span></div>
+            <strong class="moment-event" data-timing-field="event">ต้น T1: /M1=0 และ Z80 วาง PC บน Address bus</strong>
+            <p><strong>ทิศทาง Data:</strong> <span data-timing-field="direction">Memory → Z80</span></p>
+            <div class="moment-neighbors">
+              <p><b>← ก่อนหน้า</b><span data-timing-field="previous">เริ่มต้น Instruction cycle</span></p>
+              <p><b>ถัดไป →</b><span data-timing-field="next">หลังขาลงของ CLK: /MREQ และ /RD ลงต่ำ</span></p>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="read">
+    <h2>อ่าน waveform ให้เป็นภายใน 4 กฎ</h2>
+    <div class="grid-2">
+      <div class="card"><h3>1 · ทุกคำสั่งเริ่ม M1</h3><p>/M1, /MREQ และ /RD ใช้อ่าน Opcode; ปลาย M1 เปลี่ยน Address เป็น Refresh และกด /RFSH</p></div>
+      <div class="card"><h3>2 · Read กับ Write ดูคนละเส้น</h3><p>Read: /RD ต่ำและข้อมูลไหลเข้าหา Z80<br>Write: /WR ต่ำและข้อมูลไหลออกจาก Z80</p></div>
+      <div class="card"><h3>3 · Memory กับ I/O ดูพื้นที่</h3><p>Memory ใช้ /MREQ ต่ำ ส่วน I/O ใช้ /IORQ ต่ำ ห้ามกดพร้อมกันในรอบปกติ</p></div>
+      <div class="card"><h3>4 · I/O มี Tw</h3><p>I/O Read/Write มี T1, T2, Tw, T3 โดย Z80 เพิ่ม Tw อัตโนมัติหนึ่งช่วงให้อุปกรณ์ตอบสนอง</p></div>
+    </div>
+    <div class="card warning" style="margin-top:14px">
+      <p>เส้นใน Lab แสดงตำแหน่ง transition ภายใน T-state เช่น /MREQ เริ่มต่ำหลังขาลงของ T1 ส่วน Data ที่เขียนต้องเสถียรก่อน /WR ลงต่ำ จึงใช้วาดตามได้ ไม่ใช่เพียงตาราง 0/1 รายช่อง</p>
+    </div>
+  </section>
+
+  <section id="draw">
+    <h2>ลำดับวาดตอบข้อสอบ</h2>
+    <div class="card">
+      <ol>
+        <li>เขียนชื่อคำสั่ง, PC, register, Address และ Data ที่สมมติ</li>
+        <li>แบ่ง Machine cycle ก่อน: M1 4T, Memory 3T หรือ I/O 4T</li>
+        <li>วาด CLK และเส้นตั้งแบ่ง T1/T2/T3/T4/Tw</li>
+        <li>ใส่ A15–A0 และ D7–D0 พร้อมลูกศรทิศทางข้อมูล</li>
+        <li>วาด /M1, /MREQ, /IORQ, /RD, /WR และ /RFSH โดยจำว่าเครื่องหมาย / ทำงานเมื่อเส้นต่ำ</li>
+        <li>เขียนคำอธิบายใต้แต่ละ Machine cycle และรวมจำนวน T-state</li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="quiz" class="quiz compact-quiz">
+    <h2>ดึงจากความจำ</h2>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="ทุก instruction เริ่มด้วย M1 Opcode Fetch เสมอ">
+      <h3>1) Machine cycle แรกของทุกคำสั่งคืออะไร?</h3>
+      <div class="choices"><button class="choice" data-choice="A">Memory Write</button><button class="choice" data-choice="B">M1 Opcode Fetch</button><button class="choice" data-choice="C">I/O Read</button><button class="choice" data-choice="D">Refresh อย่างเดียว</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="Memory Write ใช้ /MREQ=0 และ /WR=0 ส่วน /RD ต้องไม่ active">
+      <h3>2) คู่สัญญาณใด active ระหว่าง Memory Write?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">/MREQ + /RD</button><button class="choice mono" data-choice="B">/IORQ + /RD</button><button class="choice mono" data-choice="C">/MREQ + /WR</button><button class="choice mono" data-choice="D">/IORQ + /WR</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="D" data-explain="I/O cycle มี T1, T2, Tw, T3 รวม 4T โดย Tw ช่วยให้อุปกรณ์ตอบสนอง">
+      <h3>3) I/O Read/Write cycle ในตัวอย่างใช้กี่ T-state?</h3>
+      <div class="choices"><button class="choice" data-choice="A">1T</button><button class="choice" data-choice="B">2T</button><button class="choice" data-choice="C">3T</button><button class="choice" data-choice="D">4T</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="LD A,(HL) มี M1 4T และ Memory Read 3T รวม 7T">
+      <h3>4) LD A,(HL) ใน Lab ใช้ทั้งหมดกี่ T-state?</h3>
+      <div class="choices"><button class="choice" data-choice="A">7T</button><button class="choice" data-choice="B">8T</button><button class="choice" data-choice="C">11T</button><button class="choice" data-choice="D">13T</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <a href="0007-q4-opcode-address.html">← ข้อ 4: Opcode + Address</a> · อ้างอิงเอกสารรายวิชา หน้า 49–56 และ 63–65 ·
+    <a href="https://www.zilog.com/docs/z80/um0080.pdf">Zilog Z80 CPU User Manual</a> ·
+    <a href="0005-q6-ram-first.html">ข้อ 6: RAM ก่อน ROM →</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/timing-lab.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

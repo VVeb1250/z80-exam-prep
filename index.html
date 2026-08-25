@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="บทเรียนแบบโต้ตอบสำหรับเตรียมสอบ Z80: การต่อวงจร, Memory Foldback, Assembly, Opcode และ Timing Diagram">
+  <title>เตรียมสอบ Z80 ทีละข้อ</title>
+  <link rel="stylesheet" href="assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">Z80 EXAM PREP · START HERE</p>
+    <h1>เตรียมสอบทีละข้อ<br>ไม่ปนกัน</h1>
+    <p class="lead">เริ่มจากบท 0 ซึ่งเป็นภาษาพื้นฐานร่วม แล้วเลือกเรียนแยกตามข้อสอบข้อ 1–6</p>
+  </header>
+  <section class="grid-2">
+    <article class="card">
+      <h2>บท 0: พื้นฐานร่วม</h2>
+      <p>Address, Data, Control bus, active-low และ Pinout ที่ต้องใช้ซ้ำในทุกข้อ</p>
+      <a class="button" href="lessons/0001-z80-three-buses.html">เปิดบทพื้นฐาน</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 1: วงจรรวม Memory + I/O</h2>
+      <p>วาดรูปคำตอบเดียวครบ Z80, decoder, ROM, RAM, Input buffer และ Output latch พร้อมซูมการต่อขา</p>
+      <a class="button" href="lessons/0002-full-memory-decoding.html">เปิดข้อ 1</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 2: Access + Foldback</h2>
+      <p>ไล่ Address จาก Z80 ไปยังแต่ละชิป และพิสูจน์จากบิตที่ decode ว่าเกิด Memory Foldback หรือไม่</p>
+      <a class="button" href="lessons/0003-access-and-foldback.html">เปิดข้อ 2</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 3: Z80 Assembly</h2>
+      <p>เดินโค้ดสามแลปทีละคำสั่ง: บวก Register, บวกข้อมูลใน Memory และส่งเลขไป LED แบบวนลูป</p>
+      <a class="button" href="lessons/0006-q3-assembly.html">เปิดข้อ 3</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 4: Opcode + Address</h2>
+      <p>วาง Opcode ลง Memory ทีละไบต์ คำนวณ Address ถัดไป, little-endian และระยะของ JR LOOP</p>
+      <a class="button" href="lessons/0007-q4-opcode-address.html">เปิดข้อ 4</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 5: Timing Diagram</h2>
+      <p>เลื่อนเข็มเวลาแบบต้น–กลาง–ปลายช่วง สำหรับ Memory Read/Write และ I/O Read/Write</p>
+      <a class="button" href="lessons/0004-q5-timing-diagram.html">เปิดข้อ 5</a>
+    </article>
+    <article class="card">
+      <h2>ข้อ 6: RAM ก่อน ROM</h2>
+      <p>สลับ Y0/Y1 แล้วตาม Address ไปยัง RAM และ ROM พร้อมตรวจ Memory Foldback</p>
+      <a class="button" href="lessons/0005-q6-ram-first.html">เปิดข้อ 6</a>
+    </article>
+    <article class="card">
+      <h2>ดูแผนที่ข้อสอบ</h2>
+      <p>เห็นความเชื่อมโยงของทั้ง 6 ข้อ สูตรที่ใช้ และลำดับบทถัดไป</p>
+      <a class="button" href="reference/0001-z80-exam-map.html">เปิดแผนที่ทั้งคอร์ส</a>
+    </article>
+  </section>
+  <footer class="footer">สื่อทบทวนเพื่อการศึกษา · อ้างอิงเอกสารรายวิชาและ Zilog Z80 CPU User Manual</footer>
+</main>
+</body>
+</html>

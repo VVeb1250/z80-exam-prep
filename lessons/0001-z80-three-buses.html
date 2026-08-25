@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>บทเรียน 0001 — Z80 ผ่าน 3 บัส</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">บท 0 · พื้นฐานร่วม · ใช้เวลาประมาณ 15 นาที</p>
+    <h1>Z80 มองโลก<br>ผ่าน 3 บัส</h1>
+    <p class="lead">เป้าหมายเดียวของบทนี้: เห็นสัญญาณบนวงจรแล้วบอกได้ทันทีว่า CPU กำลังเลือก “ที่ไหน” ขน “อะไร” และสั่ง “ทำอะไร”</p>
+    <div class="score-strip">
+      <span class="pill">พื้นฐานร่วมทุกข้อ</span>
+      <span class="pill">ยังไม่เริ่มข้อ 1</span>
+      <span class="pill">ผ่านรีวิวแล้ว</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#big-picture">ภาพใหญ่</a>
+    <a href="#three-buses">3 บัส</a>
+    <a href="#active-low">Active-low</a>
+    <a href="#four-operations">4 ลายเซ็น</a>
+    <a href="#decode-4k">4K Decode</a>
+    <a href="#pinout">Pinout</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="big-picture">
+    <h2>ภาพใหญ่ใน 30 วินาที</h2>
+    <p class="kicker">ทุกครั้งที่ Z80 ติดต่อชิปภายนอก เหตุการณ์สำคัญมีเท่านี้</p>
+    <div class="system-map card" role="img" aria-label="Z80 เชื่อมกับอุปกรณ์ผ่าน address data และ control bus">
+      <div class="cpu">Z80<br><small>ผู้เริ่มรายการ</small></div>
+      <div class="mobile-link" aria-hidden="true">↓</div>
+      <div class="bus-lanes">
+        <div class="lane address one-way">ADDRESS · ที่ไหน <span class="flow-arrow" data-flow="out" aria-label="จาก CPU ไปยังอุปกรณ์"></span></div>
+        <div class="lane data">DATA · อะไร <span class="flow-arrow" data-flow="both" aria-label="ไหลได้สองทิศทาง"></span></div>
+        <div class="lane control one-way">CONTROL · ทำอะไร <span class="flow-arrow" data-flow="out" aria-label="จาก CPU ไปยังอุปกรณ์"></span></div>
+      </div>
+      <div class="mobile-link" aria-hidden="true">↓</div>
+      <div class="devices">Address Decoder<br>↓<br>ROM · RAM · I/O</div>
+    </div>
+    <p><strong>ประโยคจำ:</strong> Address เลือกบ้าน → Control เคาะประตู → Data เดินเข้า/ออก</p>
+  </section>
+
+  <section id="three-buses">
+    <h2>บัสทั้งสามทำคนละงาน</h2>
+    <div class="grid-3">
+      <article class="card bus-card address">
+        <h3>Address bus</h3>
+        <div class="big-number">A15–A0</div>
+        <p>16 เส้น ทิศทางจาก CPU ออกไป ใช้ชี้หนึ่งตำแหน่งใน Memory space</p>
+        <p class="muted"><span class="mono">2¹⁶ = 65,536 = 64K</span> ตำแหน่ง<br><span class="mono">0000H–FFFFH</span></p>
+      </article>
+      <article class="card bus-card data">
+        <h3>Data bus</h3>
+        <div class="big-number">D7–D0</div>
+        <p>8 เส้น สองทิศทาง ขนข้อมูลครั้งละหนึ่งไบต์ระหว่าง Z80 กับชิปที่ถูกเลือก</p>
+        <p class="muted">Read: ชิป → CPU<br>Write: CPU → ชิป</p>
+      </article>
+      <article class="card bus-card control">
+        <h3>Control bus</h3>
+        <div class="big-number">/REQ + /R/W</div>
+        <p>บอกชนิดพื้นที่และทิศทาง เช่น Memory หรือ I/O และ Read หรือ Write</p>
+        <p class="muted">หลักของบทนี้: <span class="mono">/MREQ /IORQ /RD /WR</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section id="active-low">
+    <h2>ขีดบนหรือเครื่องหมาย <span class="mono">/</span> แปลว่า “สั่งงานด้วย 0”</h2>
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="active-low">MREQ</span> = <span class="mono">/MREQ</span></h3>
+        <p>เมื่อค่าเป็น <span class="zero">0</span> สัญญาณกำลังทำงาน (active) และเมื่อเป็น <span class="one">1</span> สัญญาณไม่ทำงาน</p>
+      </div>
+      <div class="card warning">
+        <h3>กับดักยอดนิยม</h3>
+        <p>อย่าแปลกราฟต่ำว่า “ไม่มีสัญญาณ” สำหรับขา active-low ช่วงต่ำคือช่วงที่คำสั่งกำลังถูกยืนยัน</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="four-operations">
+    <h2>4 ลายเซ็นที่ต้องเรียกจากความจำ</h2>
+    <p class="kicker">มองเฉพาะคู่ที่เป็น 0 ก็รู้ทันทีว่าเกิดรายการชนิดใด</p>
+    <div class="card" style="overflow-x:auto">
+      <table class="signal-table">
+        <thead><tr><th>รายการ</th><th>/MREQ</th><th>/IORQ</th><th>/RD</th><th>/WR</th><th>ทิศทางข้อมูล</th></tr></thead>
+        <tbody>
+          <tr><td>Memory Read</td><td><span class="zero">0</span></td><td><span class="one">1</span></td><td><span class="zero">0</span></td><td><span class="one">1</span></td><td>Memory → CPU</td></tr>
+          <tr><td>Memory Write</td><td><span class="zero">0</span></td><td><span class="one">1</span></td><td><span class="one">1</span></td><td><span class="zero">0</span></td><td>CPU → Memory</td></tr>
+          <tr><td>I/O Read</td><td><span class="one">1</span></td><td><span class="zero">0</span></td><td><span class="zero">0</span></td><td><span class="one">1</span></td><td>I/O → CPU</td></tr>
+          <tr><td>I/O Write</td><td><span class="one">1</span></td><td><span class="zero">0</span></td><td><span class="one">1</span></td><td><span class="zero">0</span></td><td>CPU → I/O</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>กดเล่น: ดู Memory Read เดินบนวงจรจริง</h2>
+    <p class="kicker">ตัวอย่างอ่านตำแหน่ง 1234H — สีที่สว่างคือสายหรืออุปกรณ์ที่กำลังทำงาน</p>
+    <div class="bus-demo" data-bus-demo data-phase="0">
+      <div class="demo-node demo-cpu">
+        <div>Z80<br><span class="mono">CPU</span><br><small>เริ่มรายการอ่าน</small></div>
+      </div>
+      <div class="demo-wires" aria-label="สายสัญญาณระหว่าง Z80 กับหน่วยความจำ">
+        <div class="demo-wire address-wire"><span class="mono">A15–A0 = 1234H</span><br><small>ตำแหน่ง <span class="flow-arrow" data-flow="out" aria-label="จาก CPU ไปยังชิป"></span></small></div>
+        <div class="demo-wire request-wire"><span class="mono">/MREQ = 0</span><br><small>เลือกพื้นที่ Memory <span class="flow-arrow" data-flow="out" aria-label="จาก CPU ไปยังชิป"></span></small></div>
+        <div class="demo-wire direction-wire"><span class="mono">/RD = 0</span><br><small>ขออ่าน <span class="flow-arrow" data-flow="out" aria-label="จาก CPU ไปยังชิป"></span></small></div>
+        <div class="demo-wire data-wire"><span class="mono">D7–D0 = 5AH</span><br><small>ข้อมูล <span class="flow-arrow" data-flow="in" aria-label="จากชิปกลับเข้า CPU"></span></small></div>
+      </div>
+      <div class="demo-node demo-chip">
+        <div><span class="decoder-badge">Decoder สร้าง /CE</span><br>Memory chip<br><small>ตำแหน่งภายใน 234H<br>ส่งข้อมูล 5AH</small></div>
+      </div>
+    </div>
+    <div class="demo-controls">
+      <button class="demo-button" type="button" data-demo-play>▶ เล่นภาพเคลื่อนไหว</button>
+      <button class="demo-button secondary" type="button" data-demo-next>ขั้นถัดไป</button>
+      <div class="demo-caption" data-demo-caption aria-live="polite"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>ตัวอย่างสองแบบที่ต้องเล่าได้</h2>
+    <div class="grid-2">
+      <article class="card example">
+        <h3>อ่าน Memory ที่ <span class="mono">1234H</span></h3>
+        <p><span class="mono">A15–A0 = 1234H</span><br><span class="mono">/MREQ=0, /RD=0</span><br>ชิปที่ decoder เลือกส่งข้อมูลออกทาง D7–D0 เข้าสู่ CPU</p>
+      </article>
+      <article class="card example" style="border-left-color:var(--data)">
+        <h3>เขียน I/O port <span class="mono">07H</span></h3>
+        <p><span class="mono">A7–A0 = 07H</span><br><span class="mono">/IORQ=0, /WR=0</span><br>ค่าใน Accumulator A ออกจาก CPU ทาง D7–D0 ไปยัง output latch</p>
+      </article>
+    </div>
+    <p class="muted">หมายเหตุสำหรับข้อสอบตามเอกสาร: ถอดรหัส I/O ด้วย A7–A0 เป็นหลัก คู่มือ Z80 ระบุว่าคำสั่งแบบ immediate ยังขับ A15–A8 ด้วยค่าจาก A; เราจะเก็บความละเอียดนี้ไว้ใช้ตอนออกแบบ decoder จริง</p>
+  </section>
+
+  <section id="decode-4k">
+    <h2>ทำไม 4K ใช้ A11–A0 แต่ A15–A12 เข้า Decoder?</h2>
+    <p class="kicker">คราวนี้สอนก่อนถาม: แยกหน้าที่ “เลือกช่องในชิป” ออกจาก “เลือกว่าชิปไหน”</p>
+    <div class="card">
+      <p><strong>ขั้นที่ 1 — หาจำนวนบิตภายในชิป:</strong> <span class="mono">4K = 4096 = 2¹²</span> ดังนั้นต้องใช้ 12 บิตเพื่อเลือก 1 จาก 4096 ช่อง นั่นคือ <span class="mono">A11–A0</span></p>
+
+      <div class="address-word" role="img" aria-label="Address 16 บิตถูกแยกเป็น A15 ถึง A12 สำหรับ decoder และ A11 ถึง A0 สำหรับตำแหน่งในชิป">
+        <div class="address-nibble high">
+          <small>4 บิตบน · เลือกชิป</small>
+          <span class="address-bits">A15–A12</span>
+          <span>0000</span>
+        </div>
+        <div class="address-nibble low">
+          <small>12 บิตล่าง · เลือกช่องในชิป</small>
+          <span class="address-bits">A11–A0</span>
+          <span>XXXX XXXX XXXX</span>
+        </div>
+      </div>
+
+      <div class="decode-paths" aria-hidden="true">
+        <div class="decode-path">ส่งไปตัดสินว่าเลือกชิปใด</div>
+        <div class="decode-path">ต่อเข้าขา Address ของทุกชิปโดยตรง</div>
+      </div>
+
+      <div class="decoder-grid">
+        <div class="decoder-box"><strong>High-address Decoder</strong><br><span class="mono">0000 → /CE_ROM</span><br><span class="mono">0001 → /CE_RAM</span></div>
+        <div class="inside-box"><strong>ขา A11–A0 ของ ROM/RAM</strong><br>เลือกช่องภายในตั้งแต่ <span class="mono">000H</span> ถึง <span class="mono">FFFH</span></div>
+      </div>
+
+      <p><strong>ขั้นที่ 2 — อ่านเป็นช่วง:</strong> เมื่อ 4 บิตบนคงที่ แต่ 12 บิตล่างเปลี่ยนได้ทั้งหมด จะได้หนึ่งบล็อกขนาด 4K</p>
+      <div class="block-map" aria-label="ตัวอย่างบล็อกหน่วยความจำขนาด 4K">
+        <div class="selected"><strong>0000–0FFF</strong><span>บิตบน 0000<br>เลือก ROM</span></div>
+        <div class="selected"><strong>1000–1FFF</strong><span>บิตบน 0001<br>เลือก RAM</span></div>
+        <div><strong>2000–2FFF</strong><span>บิตบน 0010<br>ยังไม่ใช้</span></div>
+        <div><strong>… F000–FFFF</strong><span>บิตบนอื่น ๆ<br>ยังไม่ใช้</span></div>
+      </div>
+      <p><strong>ประโยคตอบข้อสอบ:</strong> A11–A0 มี 12 เส้น จึงเลือกตำแหน่งภายในชิป 4K ได้ครบ 4096 ตำแหน่ง ส่วน A15–A12 ไม่ได้เลือกช่องภายใน แต่ถูกถอดรหัสเพื่อสร้าง Chip Enable ให้ ROM หรือ RAM เพียงตัวเดียวทำงาน</p>
+    </div>
+  </section>
+
+  <section id="pinout">
+    <h2>Pinout: จัดกลุ่มแทนการท่อง 40 ขาแบบกระจัดกระจาย</h2>
+    <p class="kicker">สีเขียวอมฟ้า = Address, ส้ม = Data, แดง = Control, เทา = อื่น ๆ</p>
+    <div class="card">
+      <div class="pinout-wrap">
+       <div class="pinout" aria-label="ผังขา Z80 แบบ DIP 40 ขา">
+        <div class="pin-side">
+          <div class="pin"><span class="pin-no">1</span><span class="tag-address">A11</span></div>
+          <div class="pin"><span class="pin-no">2</span><span class="tag-address">A12</span></div>
+          <div class="pin"><span class="pin-no">3</span><span class="tag-address">A13</span></div>
+          <div class="pin"><span class="pin-no">4</span><span class="tag-address">A14</span></div>
+          <div class="pin"><span class="pin-no">5</span><span class="tag-address">A15</span></div>
+          <div class="pin"><span class="pin-no">6</span><span class="tag-other">CLK</span></div>
+          <div class="pin"><span class="pin-no">7</span><span class="tag-data">D4</span></div>
+          <div class="pin"><span class="pin-no">8</span><span class="tag-data">D3</span></div>
+          <div class="pin"><span class="pin-no">9</span><span class="tag-data">D5</span></div>
+          <div class="pin"><span class="pin-no">10</span><span class="tag-data">D6</span></div>
+          <div class="pin"><span class="pin-no">11</span><span class="tag-other">+5V</span></div>
+          <div class="pin"><span class="pin-no">12</span><span class="tag-data">D2</span></div>
+          <div class="pin"><span class="pin-no">13</span><span class="tag-data">D7</span></div>
+          <div class="pin"><span class="pin-no">14</span><span class="tag-data">D0</span></div>
+          <div class="pin"><span class="pin-no">15</span><span class="tag-data">D1</span></div>
+          <div class="pin"><span class="pin-no">16</span><span class="tag-other">/INT</span></div>
+          <div class="pin"><span class="pin-no">17</span><span class="tag-other">/NMI</span></div>
+          <div class="pin"><span class="pin-no">18</span><span class="tag-other">/HALT</span></div>
+          <div class="pin"><span class="pin-no">19</span><span class="tag-control">/MREQ</span></div>
+          <div class="pin"><span class="pin-no">20</span><span class="tag-control">/IORQ</span></div>
+        </div>
+        <div class="chip">Z80 · DIP 40</div>
+        <div class="pin-side">
+          <div class="pin right"><span class="pin-no">40</span><span class="tag-address">A10</span></div>
+          <div class="pin right"><span class="pin-no">39</span><span class="tag-address">A9</span></div>
+          <div class="pin right"><span class="pin-no">38</span><span class="tag-address">A8</span></div>
+          <div class="pin right"><span class="pin-no">37</span><span class="tag-address">A7</span></div>
+          <div class="pin right"><span class="pin-no">36</span><span class="tag-address">A6</span></div>
+          <div class="pin right"><span class="pin-no">35</span><span class="tag-address">A5</span></div>
+          <div class="pin right"><span class="pin-no">34</span><span class="tag-address">A4</span></div>
+          <div class="pin right"><span class="pin-no">33</span><span class="tag-address">A3</span></div>
+          <div class="pin right"><span class="pin-no">32</span><span class="tag-address">A2</span></div>
+          <div class="pin right"><span class="pin-no">31</span><span class="tag-address">A1</span></div>
+          <div class="pin right"><span class="pin-no">30</span><span class="tag-address">A0</span></div>
+          <div class="pin right"><span class="pin-no">29</span><span class="tag-other">GND</span></div>
+          <div class="pin right"><span class="pin-no">28</span><span class="tag-other">/RFSH</span></div>
+          <div class="pin right"><span class="pin-no">27</span><span class="tag-other">/M1</span></div>
+          <div class="pin right"><span class="pin-no">26</span><span class="tag-other">/RESET</span></div>
+          <div class="pin right"><span class="pin-no">25</span><span class="tag-other">/BUSRQ</span></div>
+          <div class="pin right"><span class="pin-no">24</span><span class="tag-other">/WAIT</span></div>
+          <div class="pin right"><span class="pin-no">23</span><span class="tag-other">/BUSACK</span></div>
+          <div class="pin right"><span class="pin-no">22</span><span class="tag-control">/WR</span></div>
+          <div class="pin right"><span class="pin-no">21</span><span class="tag-control">/RD</span></div>
+        </div>
+       </div>
+      </div>
+      <p class="scroll-hint">← เลื่อนผังซ้าย–ขวาเพื่ออ่านชื่อขาบนโทรศัพท์ →</p>
+      <div class="pin-detail" data-pin-detail aria-live="polite">
+        <div class="pin-detail-signal" data-pin-signal>แตะชื่อขา</div>
+        <p class="pin-detail-text" data-pin-text>แตะหรือคลิกขาใดก็ได้ในรูป เพื่อดูหน้าที่แบบสั้น ๆ ตรงนี้</p>
+      </div>
+      <p class="muted">สำหรับข้อ 1 ให้เริ่มวาดเป็นกลุ่ม: A15–A0, D7–D0, /MREQ, /IORQ, /RD, /WR แล้วค่อยเติม /M1, /RFSH, /WAIT, CLK, +5V และ GND เมื่อโจทย์ต้องการ “สัญญาณที่เกี่ยวข้องทั้งหมด” (เอกสารรายวิชาเขียน /BUSAK; คู่มือผู้ผลิตใช้ชื่อเต็ม /BUSACK)</p>
+    </div>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>ดึงจากความจำ: ห้ามย้อนดูตารางก่อน</h2>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="Memory Read ใช้ /MREQ และ /RD เป็น 0">
+      <h3>1) คู่สัญญาณใดหมายถึง Memory Read?</h3>
+      <div class="choices">
+        <button class="choice mono" data-choice="A">/MREQ=0, /RD=0</button>
+        <button class="choice mono" data-choice="B">/IORQ=0, /RD=0</button>
+        <button class="choice mono" data-choice="C">/MREQ=0, /WR=0</button>
+        <button class="choice mono" data-choice="D">/IORQ=0, /WR=0</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="Write หมายถึงข้อมูลไหลจาก CPU ไปยังอุปกรณ์">
+      <h3>2) ทิศทางข้อมูลของ I/O Write คือข้อใด?</h3>
+      <div class="choices">
+        <button class="choice" data-choice="A">I/O ส่งเข้า CPU</button>
+        <button class="choice" data-choice="B">CPU ส่งออก I/O</button>
+        <button class="choice" data-choice="C">ROM ส่งเข้า CPU</button>
+        <button class="choice" data-choice="D">CPU ส่งออก ROM</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="4K = 4096 = 2^12 จึงใช้ address ภายใน 12 เส้น คือ A11–A0">
+      <h3>3) ชิป Memory ขนาด 4K×8 ต้องรับ Address ภายในกี่เส้น?</h3>
+      <div class="choices">
+        <button class="choice" data-choice="A">A9–A0 จำนวน 10 เส้น</button>
+        <button class="choice" data-choice="B">A10–A0 จำนวน 11 เส้น</button>
+        <button class="choice" data-choice="C">A11–A0 จำนวน 12 เส้น</button>
+        <button class="choice" data-choice="D">A12–A0 จำนวน 13 เส้น</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <section class="card">
+    <h2>Exit ticket</h2>
+    <p>ปิดตาราง แล้วตอบครูในแชตเพียง 2 บรรทัด:</p>
+    <ol>
+      <li><span class="mono">/MREQ=0, /WR=0</span> คือรายการอะไร และข้อมูลไหลทางไหน?</li>
+      <li>เพราะเหตุใด Memory 4K จึงต่อ A11–A0 เข้าชิปโดยตรง แต่ A15–A12 ต้องเข้า decoder?</li>
+    </ol>
+    <p>ถ้าจุดไหนยังพร่า ถามต่อได้ทันที—จากนั้นไป <a href="0002-full-memory-decoding.html">ข้อ 1 ตอน A: วาดส่วน Memory</a></p>
+  </section>
+
+  <footer class="footer">
+    อ้างอิง: เอกสารประกอบรายวิชา 178 320 หน้า 25–26, 49–50, 59 และ 62–64 ·
+    <a href="https://www.zilog.com/docs/z80/um0080.pdf">Zilog Z80 CPU User Manual</a> (Bus Request and Timing)
+    · <a href="0002-full-memory-decoding.html">ไปข้อ 1 ตอน A →</a>
+    · <a href="../reference/0001-z80-exam-map.html">เปิดแผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/bus-demo.js"></script>
+<script src="../assets/pinout.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

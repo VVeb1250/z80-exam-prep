@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 2 — เห็น Memory Foldback จากวงจรจริง</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 2 · ACCESS + FOLDBACK · ประมาณ 15 นาที</p>
+    <h1>ถอดสายบิตสูงออก<br>แล้วดูชิปเดิมโผล่ซ้ำ</h1>
+    <p class="lead">ไม่ทวนลำดับอ่าน–เขียนจากข้อ 1 อีก หน้านี้ทดลองจุดเดียว: Full decoding ต่างจาก Partial decoding ที่สายจริงอย่างไร และเหตุใดจึงเกิด Memory Foldback</p>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#lab">ทดลองวงจร</a>
+    <a href="#why">เหตุผล</a>
+    <a href="#answer">แม่แบบตอบ</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="lab">
+    <h2>เลื่อนสองแถบ แล้วดูวงจรกับ Memory map เปลี่ยนพร้อมกัน</h2>
+    <div class="fold-lab" data-fold-lab>
+      <div class="lab-controls">
+        <div class="lab-control">
+          <label for="decode-mode">การต่อวงจร <output data-lab-field="mode">Full decoding</output></label>
+          <input id="decode-mode" data-mode-input type="range" min="0" max="1" step="1" value="0">
+          <div class="range-ends"><span>Full · ต่อ A15–A12 ครบ</span><span>Partial · ใช้แค่ A12</span></div>
+        </div>
+        <div class="lab-control">
+          <label for="address-block">บิตบนของ Address <output data-lab-field="block">2xxxH</output></label>
+          <input id="address-block" data-block-input type="range" min="0" max="15" step="1" value="2">
+          <div class="range-ends"><span>0xxxH</span><span>FxxxH</span></div>
+        </div>
+      </div>
+
+      <div class="lab-circuit-wrap" tabindex="0" aria-label="วงจรทดลอง Foldback เลื่อนซ้ายขวาได้">
+        <svg class="lab-circuit" data-lab-circuit viewBox="0 0 1000 410" role="img" aria-labelledby="fold-circuit-title fold-circuit-desc">
+          <title id="fold-circuit-title">วงจร Full และ Partial address decoding</title>
+          <desc id="fold-circuit-desc">Full decoding ต่อ A15 ถึง A12 เข้า 74x154 ส่วน Partial decoding ไม่ต่อ A15 ถึง A13 และใช้เพียง A12 เลือก ROM RAM</desc>
+          <defs>
+            <marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+            <marker id="fs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
+            <marker id="fc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ad3152"/></marker>
+          </defs>
+          <rect x="12" y="12" width="976" height="386" rx="18" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+
+          <rect x="38" y="105" width="180" height="220" rx="15" fill="#102e3b"/>
+          <text x="128" y="145" text-anchor="middle" font-size="25" font-weight="900" fill="white" style="fill:white">Z80</text>
+          <text x="198" y="184" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">A15–A12</text>
+          <text x="198" y="226" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
+          <text x="198" y="286" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">A11–A0</text>
+
+          <rect x="350" y="105" width="240" height="170" rx="15" fill="#f8dfe7" stroke="#ad3152" stroke-width="3"/>
+          <text x="470" y="153" text-anchor="middle" font-size="23" font-weight="900" data-lab-field="decoderTitle">74x154</text>
+          <text x="470" y="190" text-anchor="middle" font-size="16" class="mono-svg" data-lab-field="decoderDetail">ใช้ A15–A12 + /MREQ</text>
+          <text x="566" y="226" text-anchor="end" font-size="15" class="mono-svg" data-lab-field="romOut">Y0</text>
+          <text x="566" y="258" text-anchor="end" font-size="15" class="mono-svg" data-lab-field="ramOut">Y1</text>
+
+          <g data-partial-only>
+            <rect x="275" y="32" width="390" height="52" rx="11" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+            <text x="470" y="65" text-anchor="middle" font-size="17" font-weight="900" fill="#8d2846" style="fill:#8d2846">A15–A13 ไม่ได้ต่อ — เปลี่ยนค่าเท่าไรก็ไม่ถึงวงจรเลือกชิป</text>
+            <path d="M218 165H285" fill="none" stroke="#ad3152" stroke-width="4"/>
+            <path d="M286 151L310 175M310 151L286 175" fill="none" stroke="#ad3152" stroke-width="5"/>
+            <text x="260" y="147" text-anchor="middle" font-size="14" class="mono-svg" fill="#ad3152" style="fill:#ad3152">A15–A13</text>
+          </g>
+
+          <path data-full-only d="M218 183H350" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#fa)"/>
+          <text data-full-only x="284" y="170" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A15–A12</text>
+          <path data-partial-only d="M218 190H350" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#fa)"/>
+          <text data-partial-only x="284" y="210" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">ต่อเฉพาะ A12</text>
+          <path d="M218 226H330V232H350" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#fc)"/>
+
+          <rect class="chip-body" data-chip="rom" x="700" y="48" width="230" height="135" rx="15" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
+          <text x="815" y="88" text-anchor="middle" font-size="25" font-weight="900">ROM 4K</text>
+          <text x="815" y="122" text-anchor="middle" font-size="15" class="mono-svg">/CE_ROM</text>
+          <text x="815" y="153" text-anchor="middle" font-size="14" class="mono-svg">offset = A11–A0</text>
+          <rect class="chip-body" data-chip="ram" x="700" y="227" width="230" height="135" rx="15" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
+          <text x="815" y="267" text-anchor="middle" font-size="25" font-weight="900">RAM 4K</text>
+          <text x="815" y="301" text-anchor="middle" font-size="15" class="mono-svg">/CE_RAM</text>
+          <text x="815" y="332" text-anchor="middle" font-size="14" class="mono-svg">offset = A11–A0</text>
+
+          <path class="select-wire" data-select-rom d="M590 220H635V115H700" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#fs)"/>
+          <path class="select-wire" data-select-ram d="M590 252H635V294H700" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#fs)"/>
+          <path d="M218 286H620V155H700" fill="none" stroke="#087e8b" stroke-width="4" marker-end="url(#fa)"/>
+          <path d="M620 286V334H700" fill="none" stroke="#087e8b" stroke-width="4" marker-end="url(#fa)"/>
+          <circle cx="620" cy="286" r="6" fill="#087e8b"/>
+          <text x="420" y="307" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0 เข้าทั้งสองชิปตรง ๆ</text>
+
+          <text x="815" y="390" text-anchor="middle" font-size="16" font-weight="900">Address ที่กำลังทดลอง: <tspan class="mono-svg" data-lab-field="address">2123H</tspan> · A15–A12 = <tspan class="mono-svg" data-lab-field="highBits">0010</tspan></text>
+        </svg>
+      </div>
+      <p class="scroll-hint">← บนโทรศัพท์ลากวงจรซ้าย–ขวาได้ โดยรูปและสายไม่ถูกบีบ →</p>
+
+      <div class="lab-summary">
+        <div><small>ชิปที่ตอบ</small><strong data-lab-field="device">ไม่มีชิปตอบ</strong></div>
+        <div><small>ตำแหน่งในชิป</small><strong data-lab-field="offset">—</strong></div>
+        <div><small>ผลการ decode</small><strong data-lab-field="fold">ไม่เกิด Foldback</strong><span data-lab-field="copy">มีเพียงตำแหน่งเดียว</span></div>
+      </div>
+
+      <div class="block-ruler-scroll" tabindex="0" aria-label="Memory map 16 บล็อก เลื่อนซ้ายขวาได้">
+        <div class="block-ruler">
+          <div class="block-cell" data-block-cell="0"><strong>0xxx</strong><small>ROM</small></div>
+          <div class="block-cell" data-block-cell="1"><strong>1xxx</strong><small>RAM</small></div>
+          <div class="block-cell" data-block-cell="2"><strong>2xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="3"><strong>3xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="4"><strong>4xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="5"><strong>5xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="6"><strong>6xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="7"><strong>7xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="8"><strong>8xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="9"><strong>9xxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="10"><strong>Axxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="11"><strong>Bxxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="12"><strong>Cxxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="13"><strong>Dxxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="14"><strong>Exxx</strong><small>ว่าง</small></div>
+          <div class="block-cell" data-block-cell="15"><strong>Fxxx</strong><small>ว่าง</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="why">
+    <h2>ดูที่สายจริงแล้วตัดสิน Foldback</h2>
+    <div class="compact-proof card">
+      <div class="formula-badge">2³ = 8</div>
+      <div>
+        <p><strong>Full:</strong> A15–A12 เข้า 74x154 ครบ เปลี่ยนบิตใดก็เปลี่ยน Y จึงมี ROM ที่ 0xxx และ RAM ที่ 1xxx เพียงชุดเดียว</p>
+        <p><strong>Partial:</strong> ปลายสาย A15–A13 จบที่เครื่องหมาย × วงจรจึงมองไม่เห็นสามบิตนี้ เหลือ A12 เลือก ROM/RAM</p>
+        <p>เมื่อ A15–A13 เปลี่ยนได้ 2³ แบบ แต่ /CE และ A11–A0 ยังเหมือนเดิม CPU จึงพบชิปกายภาพตัวเดิม 8 ช่วง — นี่คือ Memory Foldback</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="answer">
+    <h2>แม่แบบตอบข้อ 2 แบบสั้นแต่ครบ</h2>
+    <div class="card">
+      <p>“วงจรนี้ใช้ <strong>[A15–A12 ครบ / เฉพาะ A12]</strong> ในการสร้าง Chip Select ส่วน A11–A0 เข้าขา Address ภายใน ROM/RAM โดยตรง เมื่อ Z80 ส่ง Address <strong>[ค่า]</strong> จะได้ <strong>[Y หรือ /CE]</strong> active และเข้าตำแหน่ง <strong>[offset]</strong> ภายในชิป เนื่องจากมีบิตที่ไม่ถูก decode จำนวน <strong>[k]</strong> บิต จึง <strong>[ไม่เกิด / เกิด]</strong> Memory Foldback จำนวน <strong>2ᵏ</strong> ชุด”</p>
+    </div>
+  </section>
+
+  <section id="quiz" class="quiz compact-quiz">
+    <h2>ดึงจากความจำ</h2>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="Partial circuit ใช้ A12=0 เลือก ROM และ A11–A0=123H; A15–A13 ไม่ได้ต่อจึงไม่มีผล">
+      <h3>1) Partial decoding: 2123H เข้าที่ใด?</h3>
+      <div class="choices"><button class="choice" data-choice="A">ROM offset 123H</button><button class="choice" data-choice="B">RAM offset 123H</button><button class="choice" data-choice="C">ROM offset 2123H</button><button class="choice" data-choice="D">ไม่มีชิปตอบ</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="A15–A13 รวม 3 บิตไม่ถูก decode จึงเกิด 2³ = 8 ชุด">
+      <h3>2) สาย A15–A13 ไม่ได้ต่อ จะเกิดกี่สำเนา?</h3>
+      <div class="choices"><button class="choice" data-choice="A">2</button><button class="choice" data-choice="B">3</button><button class="choice" data-choice="C">8</button><button class="choice" data-choice="D">16</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="D" data-explain="Full decoding ตรวจ A15–A12 ครบ จึงมีแต่ Y0/Y1 ที่ต่อ ROM/RAM และไม่มี Address alias ของชิปเหล่านี้">
+      <h3>3) วงจรข้อ 1 ที่ใช้ 74x154 ตรวจ A15–A12 ครบ มี Foldback หรือไม่?</h3>
+      <div class="choices"><button class="choice" data-choice="A">มี 2 ชุด</button><button class="choice" data-choice="B">มี 4 ชุด</button><button class="choice" data-choice="C">มี 8 ชุด</button><button class="choice" data-choice="D">ไม่มี</button></div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <a href="0002-full-memory-decoding.html">← ข้อ 1: วงจรรวม</a> · อ้างอิงเอกสารรายวิชา หน้า 59–61 ·
+    <a href="https://www.zilog.com/docs/z80/um0080.pdf">Zilog Z80 CPU User Manual</a> ·
+    <a href="0006-q3-assembly.html">ข้อ 3: Z80 Assembly →</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/access-foldback.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 3 — เขียนโปรแกรม Z80 Assembly</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 3 · Z80 ASSEMBLY · 20 คะแนน</p>
+    <h1>อ่านลูกศรการทำงาน<br>แล้วเขียนเป็นคำสั่ง</h1>
+    <p class="lead">จากแลปที่มี หลักสำคัญคือ Load ค่าคงที่, อ่าน–เขียน Memory ผ่าน Pointer, บวกใน A และเลื่อน Pointer ไม่จำเป็นต้องเริ่มจากโปรแกรมซับซ้อน</p>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#meaning">ข้อ 3 ต้องการอะไร</a>
+    <a href="#evidence">สิ่งที่แลปสอน</a>
+    <a href="#lab">เดินโค้ด</a>
+    <a href="#adapt">วิธีดัดแปลง</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="meaning">
+    <h2>ข้อ 3 ต้องการอะไร?</h2>
+    <div class="card warning">
+      <p><strong>โจทย์เต็มหลังคำว่า “จงเขียนโค้ด Z80 Assembly …” ยังหายอยู่</strong> จึงฟันธงโปรแกรมจริงไม่ได้</p>
+      <p>สิ่งที่แน่นอนคือ ต้องแปลงพฤติกรรมเป็นคำสั่ง เช่น “ใส่ค่า → อ่าน Memory → บวก → เก็บผล → หยุด” โดยข้อ 3 สนใจ <strong>ลำดับและความหมาย</strong> ส่วน Address/Opcode จะทำในข้อ 4</p>
+    </div>
+  </section>
+
+  <section id="evidence">
+    <h2>จากแลป มีสามแพตเทิร์นที่ควรทำได้เอง</h2>
+    <div class="grid-3 lab-evidence">
+      <article class="card">
+        <span class="phase-badge">LAB A · REGISTER</span>
+        <h3>1 + 2 + 3 + 4 → A</h3>
+        <div class="mini-dataflow"><span>ค่าคงที่</span><b>→</b><span>A/B/C/D</span><b>→</b><span>ADD เข้า A</span></div>
+        <p>ทักษะ: <span class="mono">LD r,n</span> และ <span class="mono">ADD A,r</span></p>
+      </article>
+      <article class="card">
+        <span class="phase-badge">LAB B · MEMORY</span>
+        <h3>[2100H] + [2101H] → [2102H]</h3>
+        <div class="mini-dataflow"><span>Memory</span><b>→</b><span>A/B</span><b>→</b><span>ADD</span><b>→</b><span>Memory</span></div>
+        <p>ทักษะ: <span class="mono">(HL)/(DE)</span>, <span class="mono">INC DE</span> และ <span class="mono">LD (DE),A</span></p>
+      </article>
+      <article class="card">
+        <span class="phase-badge">LAB C · LED + LOOP</span>
+        <h3>00H, 01H, 02H… → LED port 40H</h3>
+        <div class="mini-dataflow"><span>XOR A</span><b>→</b><span>OUT 40H</span><b>→</b><span>INC A</span><b>↺</b></div>
+        <p>ทักษะ: <span class="mono">XOR A</span>, <span class="mono">OUT</span> และ <span class="mono">JR label</span></p>
+      </article>
+    </div>
+  </section>
+
+  <section id="lab">
+    <h2>เลือกแลป แล้วกดย้อน–ถัดไปดูค่าที่เปลี่ยน</h2>
+    <div class="assembly-lab" data-assembly-lab>
+      <div class="instruction-tabs assembly-tabs">
+        <button type="button" class="instruction-tab is-active" data-asm-program="register">A · บวก Register</button>
+        <button type="button" class="instruction-tab" data-asm-program="memory">B · บวกจาก Memory</button>
+        <button type="button" class="instruction-tab" data-asm-program="led">C · LED + Loop</button>
+      </div>
+      <div class="assembly-toolbar">
+        <div class="timing-step-buttons"><button type="button" data-asm-prev>← ย้อน</button><button type="button" data-asm-next>ถัดไป →</button></div>
+        <strong>คำสั่ง <span data-asm-field="step">1/8</span></strong>
+      </div>
+      <div class="assembly-workspace">
+        <div class="code-sheet">
+          <div class="directive-line"><span></span><code>CPU "z80.tbl"</code><small>เลือกตารางคำสั่ง Z80 · ไม่มี Opcode</small></div>
+          <div class="directive-line"><span></span><code>HOF "INT8"</code><small>เลือกรูปแบบไฟล์ผลลัพธ์ · ไม่มี Opcode</small></div>
+          <div class="directive-line"><span></span><code data-asm-field="org">ORG 2000H</code><small>กำหนด Address เริ่มต้น</small></div>
+          <div data-asm-code-list></div>
+          <div class="directive-line"><span></span><code>END</code><small>จบ source file</small></div>
+        </div>
+        <div class="assembly-visual">
+          <div class="operation-stage">
+            <div><small>ก่อนคำสั่ง</small><strong data-asm-field="before">A=?</strong></div>
+            <div class="operation-command"><small>CPU ทำ</small><strong class="mono" data-asm-field="instruction">LD A,01H</strong></div>
+            <div><small>หลังคำสั่ง</small><strong data-asm-field="after">A=01H</strong></div>
+          </div>
+          <div class="assembly-readout">
+            <span class="phase-badge" data-asm-field="role">Load ค่าคงที่</span>
+            <p class="micro-op mono" data-asm-field="effect">A ← 01H</p>
+            <p data-asm-field="why">เลขไม่มีวงเล็บคือข้อมูลจริง จึงใส่ 01H ลง A โดยตรง</p>
+          </div>
+          <div class="cpu-state" aria-label="สถานะ Register และ Memory">
+            <div><small>A</small><b class="mono" data-state="a">01H</b></div>
+            <div><small>B</small><b class="mono" data-state="b">?</b></div>
+            <div><small>C</small><b class="mono" data-state="c">?</b></div>
+            <div><small>D</small><b class="mono" data-state="d">?</b></div>
+            <div><small>HL</small><b class="mono" data-state="hl">—</b></div>
+            <div><small>DE</small><b class="mono" data-state="de">—</b></div>
+            <div><small>[2100]</small><b class="mono" data-state="m0">05H</b></div>
+            <div><small>[2101]</small><b class="mono" data-state="m1">03H</b></div>
+            <div><small>[2102]</small><b class="mono" data-state="m2">?</b></div>
+            <div><small>OUT 40H</small><b class="mono" data-state="out">—</b></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="adapt">
+    <h2>ไม่ต้องจำทั้งโปรแกรม—จำการแปล 5 แบบ</h2>
+    <div class="verb-map compact-verb-map">
+      <div><span>ใส่ค่า n ลง Register</span><b class="mono">LD r,n</b><small>ไม่มีวงเล็บ = ค่า</small></div>
+      <div><span>อ่าน Memory ที่ Pointer ชี้</span><b class="mono">LD A,(HL)</b><small>มีวงเล็บ = ไป Memory</small></div>
+      <div><span>เก็บ A ลง Memory</span><b class="mono">LD (DE),A</b><small>ปลายทางอยู่ซ้าย</small></div>
+      <div><span>บวกค่าเข้ากับ A</span><b class="mono">ADD A,r</b><small>ผลกลับมาอยู่ A</small></div>
+      <div><span>ขยับ Pointer 1 byte</span><b class="mono">INC rr</b><small>เช่น DE: 2101→2102</small></div>
+      <div><span>ล้าง A เป็นศูนย์</span><b class="mono">XOR A</b><small>A XOR ตัวเอง = 00H</small></div>
+      <div><span>ส่ง A ไป LED</span><b class="mono">OUT (40H),A</b><small>เขียน I/O port 40H</small></div>
+      <div><span>วนกลับ Label</span><b class="mono">JR LOOP</b><small>กระโดดแบบ Relative</small></div>
+    </div>
+    <div class="card callout"><p><strong>อ่านจากขวาไปซ้าย:</strong> <span class="mono">LD A,(HL)</span> คือ A รับจาก Memory แต่ <span class="mono">LD (DE),A</span> คือ Memory รับจาก A คำสั่ง LD เขียน “ปลายทาง, แหล่งข้อมูล”</p></div>
+  </section>
+
+  <section id="quiz" class="quiz compact-quiz">
+    <h2>ดึงจากความจำ</h2>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="ข้อ 3 ให้เลือกลำดับคำสั่ง Assembly ให้ทำงานตามโจทย์ ส่วน Opcode และ Address เป็นข้อ 4">
+      <h3>1) ข้อ 3 ตรวจสิ่งใดเป็นหลัก?</h3>
+      <div class="choices"><button class="choice" data-choice="A">Timing</button><button class="choice" data-choice="B">ลำดับ Assembly</button><button class="choice" data-choice="C">เลข Opcode อย่างเดียว</button><button class="choice" data-choice="D">วงจร Decoder</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="วงเล็บรอบ HL หมายถึงเข้าถึง Memory ที่ Address ซึ่งเก็บอยู่ใน HL">
+      <h3>2) ถ้า HL=2100H คำสั่งใดอ่าน [2100H] เข้า A?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">LD A,HL</button><button class="choice mono" data-choice="B">LD HL,A</button><button class="choice mono" data-choice="C">LD A,(HL)</button><button class="choice mono" data-choice="D">LD (HL),2100H</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="ADD A,B นำ A+B แล้วเก็บผลกลับใน A">
+      <h3>3) A=03H และ B=05H หลัง ADD A,B ได้อะไร?</h3>
+      <div class="choices"><button class="choice" data-choice="A">A=08H</button><button class="choice" data-choice="B">B=08H</button><button class="choice" data-choice="C">A=02H</button><button class="choice" data-choice="D">Memory=08H</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="XOR A ล้าง A เป็น 00H แล้ว OUT (40H),A จึงส่ง 00H ไปยังพอร์ต LED รอบแรก">
+      <h3>4) รอบแรกของ Lab LED ส่งค่าใดไป Port 40H?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">01H</button><button class="choice mono" data-choice="B">00H</button><button class="choice mono" data-choice="C">40H</button><button class="choice mono" data-choice="D">FFH</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <footer class="footer">
+    <a href="0003-access-and-foldback.html">← ข้อ 2: Access + Foldback</a> · อ้างอิงเอกสารรายวิชา หน้า 30–48 ·
+    <a href="0007-q4-opcode-address.html">ข้อ 4: Opcode + Address →</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/assembly-lab.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>

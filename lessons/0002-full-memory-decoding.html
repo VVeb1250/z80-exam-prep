@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ข้อ 1 — วาดวงจรรวม Memory และ I/O</title>
+  <link rel="stylesheet" href="../assets/course.css">
+</head>
+<body>
+<main class="page">
+  <header class="hero">
+    <p class="eyebrow">ข้อ 1 · วงจรรวม · ใช้เวลาประมาณ 35 นาที</p>
+    <h1>วาด Z80 ต่อ Memory + I/O<br>เป็นรูปคำตอบเดียว</h1>
+    <p class="lead">เริ่มจากเห็นรูปสุดท้ายที่นำไปวาดตอบได้ แล้วค่อยซูมส่วน Memory และ I/O ทีละส่วน โดยยังไม่ข้ามไปอธิบายการเข้าถึงหรือ Foldback ของข้อ 2</p>
+    <div class="score-strip">
+      <span class="pill">ข้อ 1 · ครบรูป</span>
+      <span class="pill">Memory + I/O</span>
+      <span class="pill">ไม่ปนข้อ 2</span>
+    </div>
+  </header>
+
+  <nav class="toc" aria-label="สารบัญย่อ">
+    <a href="#scope">ขอบเขต</a>
+    <a href="#full-system">รูปคำตอบรวม</a>
+    <a href="#map">Memory Map</a>
+    <a href="#schematic">ซูม Memory</a>
+    <a href="#adapt">เปลี่ยนขนาด</a>
+    <a href="#simulator">ลอง Address</a>
+    <a href="#write-enable">ขา /WE</a>
+    <a href="#io-detail">ซูม I/O</a>
+    <a href="#quiz">ทดสอบ</a>
+  </nav>
+
+  <section id="scope">
+    <h2>บทนี้ครอบคลุมถึงไหน</h2>
+    <div class="scope-grid">
+      <div class="scope-item in"><strong>เรียนจบแล้วต้องทำได้</strong><br>วาด Z80 + Memory decoder + ROM + RAM + I/O decoder + Input buffer + Output latch พร้อม Address, Data และ Control</div>
+      <div class="scope-item out"><strong>ยังแยกไปข้อ 2</strong><br>หน้านี้เน้น “ต่อสายและวาดรูป” ส่วนการบรรยายลำดับการเข้าถึงแต่ละชิปและ Memory Foldback จะอยู่ข้อ 2</div>
+    </div>
+  </section>
+
+  <section id="full-system">
+    <h2>ภาพคำตอบสุดท้ายของข้อ 1</h2>
+    <p class="kicker">โครงเดียวกับภาพตัวอย่าง: CPU อยู่ซ้าย บัสเป็นแกนกลาง Decoder เลือกชิป และทุกอุปกรณ์ต่อเข้าบัสร่วม</p>
+    <div class="schematic-scroll" tabindex="0" aria-label="วงจรรวม Z80 ต่อ ROM RAM input buffer และ output latch เลื่อนซ้ายขวาได้">
+      <svg class="system-schematic" viewBox="0 0 1200 800" role="img" aria-labelledby="system-title system-desc">
+        <title id="system-title">วงจรรวม Z80 กับหน่วยความจำและอุปกรณ์ I/O</title>
+        <desc id="system-desc">Z80 ต่อ address bus เข้าตัวถอดรหัส ROM RAM และ I/O decoder ต่อ data bus ร่วม และต่อ MREQ IORQ RD WR เพื่อควบคุมอุปกรณ์</desc>
+        <defs>
+          <marker id="sys-address" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+          <marker id="sys-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7b3fa0"/></marker>
+          <marker id="sys-control" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ad3152"/></marker>
+          <marker id="sys-select" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
+        </defs>
+        <rect x="8" y="8" width="1184" height="784" rx="22" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+
+        <rect x="30" y="250" width="180" height="325" rx="17" fill="#102e3b"/>
+        <text x="120" y="287" text-anchor="middle" font-size="25" font-weight="900" fill="white" style="fill:white">Z80 CPU</text>
+        <text x="190" y="326" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">A15–A0</text>
+        <text x="190" y="396" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+        <text x="190" y="466" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
+        <text x="190" y="496" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/IORQ</text>
+        <text x="190" y="526" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/RD</text>
+        <text x="190" y="556" text-anchor="end" font-size="16" class="mono-svg" fill="white" style="fill:white">/WR</text>
+
+        <line x1="210" y1="330" x2="1160" y2="330" stroke="#087e8b" stroke-width="6" marker-end="url(#sys-address)"/>
+        <text x="225" y="317" font-size="17" font-weight="900" fill="#087e8b" style="fill:#087e8b">ADDRESS BUS</text>
+        <line x1="210" y1="400" x2="1160" y2="400" stroke="#7b3fa0" stroke-width="6" marker-start="url(#sys-data)" marker-end="url(#sys-data)"/>
+        <text x="225" y="387" font-size="17" font-weight="900" fill="#7b3fa0" style="fill:#7b3fa0">DATA BUS</text>
+        <line x1="210" y1="460" x2="1160" y2="460" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <line x1="210" y1="490" x2="1160" y2="490" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <line x1="210" y1="520" x2="1160" y2="520" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <line x1="210" y1="550" x2="1160" y2="550" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+
+        <rect x="300" y="55" width="220" height="170" rx="14" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+        <text x="410" y="88" text-anchor="middle" font-size="21" font-weight="900">Memory Decoder</text>
+        <text x="410" y="118" text-anchor="middle" font-size="15" class="mono-svg">A15–A12 → 74x154</text>
+        <text x="410" y="147" text-anchor="middle" font-size="15" class="mono-svg">/E ← /MREQ</text>
+        <text x="500" y="183" text-anchor="end" font-size="15" class="mono-svg">Y0</text>
+        <text x="500" y="210" text-anchor="end" font-size="15" class="mono-svg">Y1</text>
+
+        <rect x="630" y="55" width="190" height="170" rx="14" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
+        <text x="725" y="90" text-anchor="middle" font-size="23" font-weight="900">ROM 4K × 8</text>
+        <text x="725" y="119" text-anchor="middle" font-size="15" class="mono-svg">0000H–0FFFH</text>
+        <text x="648" y="151" font-size="15" class="mono-svg">/CE ← Y0</text>
+        <text x="648" y="180" font-size="15" class="mono-svg">/OE ← /RD</text>
+        <text x="725" y="211" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
+
+        <rect x="930" y="55" width="210" height="170" rx="14" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
+        <text x="1035" y="90" text-anchor="middle" font-size="23" font-weight="900">RAM 4K × 8</text>
+        <text x="1035" y="119" text-anchor="middle" font-size="15" class="mono-svg">1000H–1FFFH</text>
+        <text x="948" y="151" font-size="15" class="mono-svg">/CE ← Y1</text>
+        <text x="948" y="180" font-size="15" class="mono-svg">/OE←/RD · /WE←/WR</text>
+        <text x="1035" y="211" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
+
+        <path d="M520 180H630" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#sys-select)"/>
+        <text x="575" y="168" text-anchor="middle" font-size="14" class="mono-svg" fill="#4774b8" style="fill:#4774b8">/CE_ROM</text>
+        <path d="M520 210H550V30H900V180H930" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#sys-select)"/>
+        <text x="720" y="25" text-anchor="middle" font-size="14" class="mono-svg" fill="#4774b8" style="fill:#4774b8">Y1 → /CE_RAM</text>
+
+        <path d="M360 330V225" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#sys-address)"/>
+        <circle cx="360" cy="330" r="6" fill="#087e8b"/>
+        <text x="370" y="254" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A15–A12</text>
+        <path d="M680 330V225" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#sys-address)"/>
+        <circle cx="680" cy="330" r="6" fill="#087e8b"/>
+        <text x="690" y="254" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0</text>
+        <path d="M980 330V225" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#sys-address)"/>
+        <circle cx="980" cy="330" r="6" fill="#087e8b"/>
+        <text x="990" y="254" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0</text>
+
+        <path d="M770 225V400" fill="none" stroke="#fffef9" stroke-width="12"/>
+        <path d="M770 225V400" fill="none" stroke="#7b3fa0" stroke-width="5" marker-end="url(#sys-data)"/>
+        <circle cx="770" cy="400" r="6" fill="#7b3fa0"/>
+        <path d="M1090 225V400" fill="none" stroke="#fffef9" stroke-width="12"/>
+        <path d="M1090 225V400" fill="none" stroke="#7b3fa0" stroke-width="5" marker-start="url(#sys-data)" marker-end="url(#sys-data)"/>
+        <circle cx="1090" cy="400" r="6" fill="#7b3fa0"/>
+
+        <path d="M500 460V225" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M500 460V225" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="500" cy="460" r="5" fill="#ad3152"/>
+        <path class="control-halo" d="M805 452V468M805 482V498" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M805 520V225" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="805" cy="520" r="5" fill="#ad3152"/>
+        <path class="control-halo" d="M1115 452V468M1115 482V498" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M1115 520V225" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="1115" cy="520" r="5" fill="#ad3152"/>
+        <path class="control-halo" d="M1135 452V468M1135 482V498M1135 512V528" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M1135 550V225" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="1135" cy="550" r="5" fill="#ad3152"/>
+
+        <rect x="300" y="600" width="220" height="160" rx="14" fill="#dff0f5" stroke="#087e8b" stroke-width="2"/>
+        <text x="410" y="634" text-anchor="middle" font-size="21" font-weight="900">I/O Decoder + Gate</text>
+        <text x="410" y="664" text-anchor="middle" font-size="15" class="mono-svg">A7–A0 + /IORQ</text>
+        <text x="410" y="694" text-anchor="middle" font-size="15" class="mono-svg">/RD เลือก IN · /WR เลือก OUT</text>
+        <text x="500" y="724" text-anchor="end" font-size="14" class="mono-svg">/OE_IN</text>
+        <text x="500" y="750" text-anchor="end" font-size="14" class="mono-svg">LE_OUT</text>
+
+        <rect x="630" y="600" width="190" height="160" rx="14" fill="#e8f4f1" stroke="#2f7565" stroke-width="3"/>
+        <text x="725" y="635" text-anchor="middle" font-size="22" font-weight="900">Input Buffer</text>
+        <text x="725" y="666" text-anchor="middle" font-size="15">เช่น 74LS244</text>
+        <text x="648" y="700" font-size="15" class="mono-svg">/OE ← /OE_IN</text>
+        <text x="725" y="737" text-anchor="middle" font-size="14" class="mono-svg">ภายนอก → D7–D0</text>
+
+        <rect x="930" y="600" width="210" height="160" rx="14" fill="#fff0d1" stroke="#b55c00" stroke-width="3"/>
+        <text x="1035" y="635" text-anchor="middle" font-size="22" font-weight="900">Output Latch</text>
+        <text x="1035" y="666" text-anchor="middle" font-size="15">เช่น 74LS373</text>
+        <text x="948" y="700" font-size="15" class="mono-svg">LE ← LE_OUT</text>
+        <text x="1035" y="737" text-anchor="middle" font-size="14" class="mono-svg">D7–D0 → ภายนอก</text>
+
+        <path d="M360 330V600" fill="none" stroke="#fffef9" stroke-width="12"/>
+        <path d="M360 330V600" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#sys-address)"/>
+        <text x="350" y="585" text-anchor="end" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A7–A0</text>
+        <path class="control-halo" d="M500 512V528M500 542V558" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M500 490V600" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="500" cy="490" r="5" fill="#ad3152"/>
+        <path class="control-halo" d="M410 542V558" fill="none" stroke="#fffef9" stroke-width="11"/>
+        <path d="M410 520V600" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="410" cy="520" r="5" fill="#ad3152"/>
+        <path d="M460 550V600" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#sys-control)"/>
+        <circle cx="460" cy="550" r="5" fill="#ad3152"/>
+
+        <path d="M520 715H630" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#sys-select)"/>
+        <path d="M520 745H555V780H900V715H930" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#sys-select)"/>
+        <text x="725" y="775" text-anchor="middle" font-size="14" class="mono-svg" fill="#4774b8" style="fill:#4774b8">LE_OUT → Output latch</text>
+
+        <path d="M770 600V400" fill="none" stroke="#fffef9" stroke-width="12"/>
+        <path d="M770 600V400" fill="none" stroke="#7b3fa0" stroke-width="5" marker-end="url(#sys-data)"/>
+        <circle cx="770" cy="400" r="6" fill="#7b3fa0"/>
+        <path d="M1090 400V600" fill="none" stroke="#fffef9" stroke-width="12"/>
+        <path d="M1090 400V600" fill="none" stroke="#7b3fa0" stroke-width="5" marker-end="url(#sys-data)"/>
+        <circle cx="1090" cy="400" r="6" fill="#7b3fa0"/>
+        <path d="M860 680H820" fill="none" stroke="#17222b" stroke-width="3" marker-end="url(#sys-data)"/>
+        <text x="855" y="667" text-anchor="middle" font-size="14">Sensor</text>
+        <path d="M1140 680H1180" fill="none" stroke="#17222b" stroke-width="3" marker-end="url(#sys-data)"/>
+        <text x="1175" y="667" text-anchor="end" font-size="14">LED</text>
+      </svg>
+    </div>
+    <p class="scroll-hint">← บนโทรศัพท์ ลากซ้าย–ขวา รูปจะไม่ถูกบีบจนป้ายขาอ่านไม่ออก →</p>
+    <div class="schematic-legend" aria-label="คำอธิบายสีสายของวงจรรวม">
+      <span class="legend-chip address">Address</span>
+      <span class="legend-chip" style="color:#7b3fa0">Data</span>
+      <span class="legend-chip control">Control</span>
+      <span class="legend-chip" style="color:#4774b8">Chip Select / Enable</span>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <p><strong>ลำดับวาดในห้องสอบ:</strong> ① วาง Z80 ② ลาก Address/Data/Control bus ③ วาง decoder ④ วาง ROM/RAM และ I/O ⑤ ต่อสายเข้าขา ⑥ เขียน Address range หรือ Port number ใต้ทุกชิป</p>
+    </div>
+  </section>
+
+  <section id="schematic">
+    <h2>ซูมส่วน Memory จากรูปคำตอบรวม</h2>
+    <p class="kicker">แยกเป็น 3 แผงเพื่อไม่ให้สายไขว้กัน: Decode บิตสูง → ต่อ ROM → ต่อ RAM</p>
+    <div class="schematic-scroll" tabindex="0" aria-label="แผนผังวงจร Z80 ต่อ ROM RAM และ address decoder เลื่อนซ้ายขวาได้">
+      <svg class="memory-schematic" viewBox="0 0 1100 720" role="img" aria-labelledby="schematic-title schematic-desc">
+        <title id="schematic-title">วงจร Z80 ต่อ ROM 4K และ RAM 4K</title>
+        <desc id="schematic-desc">A15 ถึง A12 และ MREQ ต่อเข้า 74x154; Y0 เลือก ROM, Y1 เลือก RAM; A11 ถึง A0 และ D7 ถึง D0 ต่อเข้าชิป; RD ต่อ OE และ WR ต่อ WE ของ RAM</desc>
+        <defs>
+          <marker id="arrow-address" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#087e8b"/></marker>
+          <marker id="arrow-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b55c00"/></marker>
+          <marker id="arrow-control" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a53251"/></marker>
+          <marker id="arrow-select" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#416b39"/></marker>
+        </defs>
+
+        <rect x="18" y="18" width="1064" height="218" rx="18" fill="#f8f5ed" stroke="#17222b" stroke-width="2"/>
+        <text x="42" y="52" font-size="20" font-weight="800">1 · Decode บิตสูงเพื่อสร้าง Chip Select</text>
+        <rect x="54" y="78" width="205" height="116" rx="13" fill="#102e3b"/>
+        <text x="156" y="112" text-anchor="middle" font-size="22" font-weight="900" fill="white" style="fill:white">Z80</text>
+        <text x="156" y="146" text-anchor="middle" font-size="18" class="mono-svg" fill="white" style="fill:white">A15–A12</text>
+        <text x="156" y="174" text-anchor="middle" font-size="18" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
+        <rect x="410" y="70" width="250" height="135" rx="13" fill="#f8dfe7" stroke="#a53251" stroke-width="2"/>
+        <text x="535" y="106" text-anchor="middle" font-size="22" font-weight="900">74x154</text>
+        <text x="535" y="137" text-anchor="middle" font-size="18">4-to-16 Decoder</text>
+        <text x="535" y="170" text-anchor="middle" font-size="16" class="mono-svg">inputs D,C,B,A · enable /E</text>
+        <line x1="259" y1="142" x2="410" y2="112" stroke="#087e8b" stroke-width="4" marker-end="url(#arrow-address)"/>
+        <text x="327" y="112" text-anchor="middle" font-size="16" class="mono-svg">A15–A12</text>
+        <line x1="259" y1="174" x2="410" y2="177" stroke="#a53251" stroke-width="4" marker-end="url(#arrow-control)"/>
+        <text x="331" y="198" text-anchor="middle" font-size="16" class="mono-svg">/MREQ</text>
+        <line x1="660" y1="112" x2="824" y2="112" stroke="#416b39" stroke-width="4" marker-end="url(#arrow-select)"/>
+        <text x="737" y="96" text-anchor="middle" font-size="16" class="mono-svg">Y0 = 0</text>
+        <rect x="824" y="84" width="216" height="52" rx="10" fill="#e5f0df" stroke="#416b39" stroke-width="2"/>
+        <text x="932" y="117" text-anchor="middle" font-size="18" class="mono-svg">/CE_ROM</text>
+        <line x1="660" y1="171" x2="824" y2="171" stroke="#416b39" stroke-width="4" marker-end="url(#arrow-select)"/>
+        <text x="737" y="158" text-anchor="middle" font-size="16" class="mono-svg">Y1 = 0</text>
+        <rect x="824" y="146" width="216" height="52" rx="10" fill="#e2e9f8" stroke="#536fa8" stroke-width="2"/>
+        <text x="932" y="179" text-anchor="middle" font-size="18" class="mono-svg">/CE_RAM</text>
+
+        <rect x="18" y="254" width="520" height="445" rx="18" fill="#f8f5ed" stroke="#17222b" stroke-width="2"/>
+        <text x="42" y="290" font-size="20" font-weight="800">2 · ต่อ ROM 4K × 8</text>
+        <rect x="48" y="320" width="145" height="315" rx="13" fill="#102e3b"/>
+        <text x="120" y="358" text-anchor="middle" font-size="21" font-weight="900" fill="white" style="fill:white">Z80 bus</text>
+        <text x="120" y="412" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">A11–A0</text>
+        <text x="120" y="474" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+        <text x="120" y="536" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">/RD</text>
+        <text x="120" y="598" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">Y0</text>
+        <rect x="340" y="320" width="165" height="315" rx="13" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
+        <text x="422" y="360" text-anchor="middle" font-size="22" font-weight="900">ROM</text>
+        <text x="422" y="388" text-anchor="middle" font-size="16">0000H–0FFFH</text>
+        <text x="360" y="417" font-size="17" class="mono-svg">A11–A0</text>
+        <text x="360" y="479" font-size="17" class="mono-svg">D7–D0</text>
+        <text x="360" y="541" font-size="17" class="mono-svg">/OE</text>
+        <text x="360" y="603" font-size="17" class="mono-svg">/CE</text>
+        <line x1="193" y1="407" x2="340" y2="407" stroke="#087e8b" stroke-width="4" marker-end="url(#arrow-address)"/>
+        <line x1="340" y1="469" x2="193" y2="469" stroke="#b55c00" stroke-width="4" marker-end="url(#arrow-data)"/>
+        <line x1="193" y1="531" x2="340" y2="531" stroke="#a53251" stroke-width="4" marker-end="url(#arrow-control)"/>
+        <line x1="193" y1="593" x2="340" y2="593" stroke="#416b39" stroke-width="4" marker-end="url(#arrow-select)"/>
+
+        <rect x="562" y="254" width="520" height="445" rx="18" fill="#f8f5ed" stroke="#17222b" stroke-width="2"/>
+        <text x="586" y="290" font-size="20" font-weight="800">3 · ต่อ RAM 4K × 8</text>
+        <rect x="592" y="320" width="145" height="345" rx="13" fill="#102e3b"/>
+        <text x="664" y="358" text-anchor="middle" font-size="21" font-weight="900" fill="white" style="fill:white">Z80 bus</text>
+        <text x="664" y="402" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">A11–A0</text>
+        <text x="664" y="456" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+        <text x="664" y="510" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">/RD</text>
+        <text x="664" y="564" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">/WR</text>
+        <text x="664" y="618" text-anchor="middle" font-size="17" class="mono-svg" fill="white" style="fill:white">Y1</text>
+        <rect x="884" y="320" width="165" height="345" rx="13" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
+        <text x="966" y="360" text-anchor="middle" font-size="22" font-weight="900">RAM</text>
+        <text x="966" y="388" text-anchor="middle" font-size="16">1000H–1FFFH</text>
+        <text x="904" y="407" font-size="17" class="mono-svg">A11–A0</text>
+        <text x="904" y="461" font-size="17" class="mono-svg">D7–D0</text>
+        <text x="904" y="515" font-size="17" class="mono-svg">/OE</text>
+        <text x="904" y="569" font-size="17" class="mono-svg">/WE</text>
+        <text x="904" y="623" font-size="17" class="mono-svg">/CE</text>
+        <line x1="737" y1="397" x2="884" y2="397" stroke="#087e8b" stroke-width="4" marker-end="url(#arrow-address)"/>
+        <line x1="737" y1="451" x2="884" y2="451" stroke="#b55c00" stroke-width="4" marker-start="url(#arrow-data)" marker-end="url(#arrow-data)"/>
+        <line x1="737" y1="505" x2="884" y2="505" stroke="#a53251" stroke-width="4" marker-end="url(#arrow-control)"/>
+        <line x1="737" y1="559" x2="884" y2="559" stroke="#a53251" stroke-width="4" marker-end="url(#arrow-control)"/>
+        <line x1="737" y1="613" x2="884" y2="613" stroke="#416b39" stroke-width="4" marker-end="url(#arrow-select)"/>
+      </svg>
+    </div>
+    <p class="scroll-hint">← บนโทรศัพท์ ลากรูปซ้าย–ขวาเพื่ออ่านสายโดยไม่บีบรูป →</p>
+    <div class="schematic-legend" aria-label="คำอธิบายสีสาย">
+      <span class="legend-chip address">Address</span>
+      <span class="legend-chip data">Data</span>
+      <span class="legend-chip control">Control</span>
+      <span class="legend-chip select">Chip Select</span>
+    </div>
+  </section>
+
+  <section id="adapt">
+    <h2>ถ้าโจทย์เปลี่ยนเป็น ROM 16K, RAM 8K หรือวางตำแหน่งแปลก</h2>
+    <p class="kicker">อย่าจำ A11–A0 หรือ Y0/Y1 ตายตัว ให้คำนวณใหม่จากขนาดและ Start address</p>
+    <div class="rule-flow">
+      <div class="rule-card"><strong>แปลงขนาดเป็น 2ⁿ</strong><br>ชิปขนาด 8K = 2¹³ จึงรับ A12–A0; 16K = 2¹⁴ จึงรับ A13–A0</div>
+      <div class="rule-card"><strong>หา End address</strong><br><span class="mono">End = Start + Size − 1</span> แล้วตรวจว่าช่วงไม่ซ้อนกัน</div>
+      <div class="rule-card"><strong>Decode บิตที่เหลือ</strong><br>บิตสูงที่ไม่ได้เข้าขาชิปต้องคงที่ตลอดช่วง จึงใช้สร้าง /CE</div>
+    </div>
+
+    <div class="layout-builder" data-memory-layout style="margin-top:16px">
+      <div class="layout-presets">
+        <button class="demo-button" type="button" data-layout-preset data-rom-size="4" data-rom-start="0000H" data-ram-size="4" data-ram-start="1000H">ตัวอย่างในเอกสาร</button>
+        <button class="demo-button" type="button" data-layout-preset data-rom-size="16" data-rom-start="8000H" data-ram-size="8" data-ram-start="2000H">ROM 16K + RAM 8K</button>
+        <button class="demo-button secondary" type="button" data-layout-preset data-rom-size="16" data-rom-start="2000H" data-ram-size="8" data-ram-start="A000H">ลองตำแหน่งพิสดาร</button>
+      </div>
+      <div class="layout-config">
+        <div class="chip-config">
+          <strong>ROM</strong>
+          <div class="config-fields">
+            <label>ขนาด<select data-rom-size><option value="4">4K</option><option value="8">8K</option><option value="16">16K</option><option value="32">32K</option></select></label>
+            <label>Start<input data-rom-start value="0000H" inputmode="text"></label>
+          </div>
+        </div>
+        <div class="chip-config">
+          <strong>RAM</strong>
+          <div class="config-fields">
+            <label>ขนาด<select data-ram-size><option value="4">4K</option><option value="8">8K</option><option value="16">16K</option><option value="32">32K</option></select></label>
+            <label>Start<input data-ram-start value="1000H" inputmode="text"></label>
+          </div>
+        </div>
+      </div>
+      <div class="layout-results">
+        <article class="layout-result rom">
+          <h3>สายของ ROM</h3>
+          <div class="result-line"><span>ช่วง</span><strong data-rom-range>0000H–0FFFH</strong></div>
+          <div class="result-line"><span>ขา Address</span><strong data-rom-pins>A11–A0</strong></div>
+          <div class="result-line"><span>เงื่อนไข /CE</span><strong data-rom-decode>A15–A12 = 0000</strong></div>
+        </article>
+        <article class="layout-result ram">
+          <h3>สายของ RAM</h3>
+          <div class="result-line"><span>ช่วง</span><strong data-ram-range>1000H–1FFFH</strong></div>
+          <div class="result-line"><span>ขา Address</span><strong data-ram-pins>A11–A0</strong></div>
+          <div class="result-line"><span>เงื่อนไข /CE</span><strong data-ram-decode>A15–A12 = 0001</strong></div>
+        </article>
+      </div>
+      <div class="layout-message ok" data-layout-message>วางได้ด้วย decoder บิตสูงแบบตรงไปตรงมา</div>
+    </div>
+    <div class="card warning" style="margin-top:14px">
+      <p><strong>ถ้า Start ไม่หารด้วยขนาดลงตัว:</strong> จะไม่มี “แพตเทิร์นบิตสูงค่าเดียว” ครอบคลุมทั้งชิป เช่น ROM 16K ที่ 2000H–5FFFH ข้ามจากบล็อกบิตสูง <span class="mono">00</span> ไป <span class="mono">01</span> จึงต้องใช้ comparator/logic เลือกช่วง และ A13–A0 จะเกิดการวน offset กลางช่วง หากต้องการให้ Start ตรงกับ offset 0000H แบบอ่านง่าย ให้ย้าย Start ไปขอบ 0000H, 4000H, 8000H หรือ C000H</p>
+    </div>
+  </section>
+
+  <section id="map">
+    <h2>โจทย์ตัวอย่างเดียวกับเอกสาร</h2>
+    <p class="kicker">แต่ละชิปมี 4096 ตำแหน่ง = 1000H bytes</p>
+    <div class="block-map" aria-label="Memory map ROM และ RAM ขนาด 4K">
+      <div class="selected"><strong>0000–0FFF</strong><span>ROM 4K<br>บิตบน 0000</span></div>
+      <div class="selected"><strong>1000–1FFF</strong><span>RAM 4K<br>บิตบน 0001</span></div>
+      <div><strong>2000–EFFF</strong><span>ยังไม่ใช้<br>Y2–Y14</span></div>
+      <div><strong>F000–FFFF</strong><span>ยังไม่ใช้<br>Y15</span></div>
+    </div>
+    <div class="card" style="margin-top:14px">
+      <p><strong>อ่านแผนที่แบบแบ่งครึ่ง Address:</strong></p>
+      <p class="mono">ROM: 0000 | XXXX XXXX XXXX → A15–A12 = 0000, offset = A11–A0</p>
+      <p class="mono">RAM: 0001 | XXXX XXXX XXXX → A15–A12 = 0001, offset = A11–A0</p>
+    </div>
+  </section>
+
+  <section id="wiring">
+    <h2>วงจรที่ควรวาดในข้อสอบ</h2>
+    <p class="kicker">รูปนี้ใช้การต่อแบบ Full Decoding: บิตสูง A15–A12 ถูกตรวจครบทุกเส้น</p>
+    <div class="wiring-board">
+      <div class="wiring-cpu">Z80 CPU<br><small>A15–A0 · D7–D0 · /MREQ · /RD · /WR</small></div>
+      <div class="wire-split">
+        <div class="wire-card high"><span class="mono">A15–A12</span><small>เลือกบล็อก 4K</small></div>
+        <div class="wire-card low"><span class="mono">A11–A0</span><small>เลือกช่องในชิป</small></div>
+        <div class="wire-card data-bus"><span class="mono">D7–D0</span><small>Data bus ร่วม</small></div>
+        <div class="wire-card controls"><span class="mono">/MREQ /RD /WR</span><small>อนุญาตและกำหนดทิศทาง</small></div>
+      </div>
+      <div class="decoder-stage">
+        <div class="decoder-chip">
+          <div><strong>74x154</strong><br>4-to-16 Decoder<br><span class="mono">D,C,B,A รับ A15–A12</span><br><span class="mono">/E1 รับ /MREQ</span><br><span class="mono">/E2 ต่อ GND</span></div>
+        </div>
+        <div class="shared-lines">
+          <div><strong>สายที่แยกไปทั้งสองชิป</strong><br><span class="mono">A11–A0 ต่อเข้า Address pins</span><br><span class="mono">D7–D0 เชื่อม Data bus ร่วม</span><br><span class="mono">/RD ต่อเข้า /OE ทั้งคู่</span><br><span class="mono">/WR ต่อเข้า /WE เฉพาะ RAM</span></div>
+        </div>
+      </div>
+      <div class="output-arrows" aria-label="เอาต์พุต decoder ไปยัง chip enable">
+        <div>Y0 สร้าง /CE_ROM</div>
+        <div>Y1 สร้าง /CE_RAM</div>
+      </div>
+      <div class="chip-pair">
+        <article class="memory-chip rom">
+          <div class="chip-title">ROM 4K × 8</div>
+          <div class="pin-lines">
+            <div class="pin-line"><span>A11–A0</span><span>รับจาก Z80</span></div>
+            <div class="pin-line"><span>D7–D0</span><span>ส่งเข้า Data bus</span></div>
+            <div class="pin-line"><span>/CE</span><span>รับจาก Y0</span></div>
+            <div class="pin-line"><span>/OE</span><span>รับจาก /RD</span></div>
+            <div class="pin-line"><span>/WE</span><span>ไม่มี/ตรึงไม่ให้เขียน</span></div>
+          </div>
+        </article>
+        <article class="memory-chip ram">
+          <div class="chip-title">RAM 4K × 8</div>
+          <div class="pin-lines">
+            <div class="pin-line"><span>A11–A0</span><span>รับจาก Z80</span></div>
+            <div class="pin-line"><span>D7–D0</span><span>เชื่อมสองทาง</span></div>
+            <div class="pin-line"><span>/CE</span><span>รับจาก Y1</span></div>
+            <div class="pin-line"><span>/OE</span><span>รับจาก /RD</span></div>
+            <div class="pin-line"><span>/WE</span><span>รับจาก /WR</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+    <div class="card warning" style="margin-top:14px">
+      <h3>ทำไมต่อ /RD และ /WR ตรงได้?</h3>
+      <p>วงจรนี้ใช้ <span class="mono">/MREQ</span> enable ตัว decoder อยู่แล้ว ดังนั้น ROM/RAM จะได้รับ <span class="mono">/CE=0</span> เฉพาะ Memory cycle เท่านั้น ถ้าออกแบบ decoder ไม่ได้ gate ด้วย /MREQ จึงค่อยสร้าง <span class="mono">/MEMRD = /MREQ OR /RD</span> และ <span class="mono">/MEMWR = /MREQ OR /WR</span> แทน</p>
+    </div>
+  </section>
+
+  <section id="simulator">
+    <h2>ลองใส่ Address แล้วดู Decoder ตัดสิน</h2>
+    <div class="address-sim" data-address-sim>
+      <div class="sim-controls">
+        <div class="sim-field">
+          <label for="address-input">Address 16 บิต</label>
+          <input id="address-input" class="address-input" data-address-input value="03A5H" inputmode="text" autocomplete="off">
+        </div>
+        <button class="demo-button" type="button" data-preset="03A5H">เลือก ROM</button>
+        <button class="demo-button" type="button" data-preset="17C0H">เลือก RAM</button>
+      </div>
+      <div class="preset-row" aria-label="ตัวอย่าง address">
+        <button class="preset" type="button" data-preset="0000H">0000H</button>
+        <button class="preset" type="button" data-preset="0FFFH">0FFFH</button>
+        <button class="preset" type="button" data-preset="1000H">1000H</button>
+        <button class="preset" type="button" data-preset="1FFFH">1FFFH</button>
+        <button class="preset" type="button" data-preset="2ABCH">2ABCH</button>
+      </div>
+      <div class="sim-word">
+        <div class="sim-high"><small>A15–A12 เข้า Decoder</small><span class="sim-value" data-sim-high>0000</span></div>
+        <div class="sim-low"><small>A11–A0 เข้าขาชิป</small><span class="sim-value" data-sim-low>0011 1010 0101</span></div>
+      </div>
+      <div class="sim-result">
+        <div><small>ชิปที่ถูกเลือก</small><strong data-sim-device>ROM</strong></div>
+        <div><small>Decoder output</small><strong data-sim-output>Y0 = 0</strong></div>
+        <div><small>ตำแหน่งในชิป</small><strong data-sim-offset>3A5H</strong></div>
+      </div>
+      <div class="grid-3" style="margin-top:12px">
+        <div class="card device-state rom is-selected" data-device-state="rom"><strong>ROM</strong><br>0000–0FFF</div>
+        <div class="card device-state ram" data-device-state="ram"><strong>RAM</strong><br>1000–1FFF</div>
+        <div class="card device-state unused" data-device-state="unused"><strong>ว่าง</strong><br>2000–FFFF</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="write-enable">
+    <h2>ก่อนทำแบบทดสอบ: /WE ของ RAM มาจากไหน</h2>
+    <p class="kicker"><span class="mono">/WE = Write Enable</span> เป็นขาอนุญาตให้ RAM รับข้อมูลเข้าไปเก็บ และเครื่องหมาย / หมายถึงทำงานเมื่อเป็น 0</p>
+    <div class="we-flow" aria-label="สัญญาณเขียนจาก Z80 ไปยัง RAM">
+      <div class="we-node">Z80 /WR</div>
+      <div class="we-arrow" aria-hidden="true">→</div>
+      <div class="we-node">RAM /WE</div>
+    </div>
+    <div class="write-cases">
+      <div class="write-case active"><strong>เขียน RAM</strong><br><span class="mono">/CE_RAM = 0</span> และ <span class="mono">/WR = 0</span> ทำให้ <span class="mono">/WE = 0</span> — RAM เก็บค่าที่อยู่บน D7–D0</div>
+      <div class="write-case"><strong>อ่าน RAM</strong><br><span class="mono">/CE_RAM = 0</span>, <span class="mono">/WR = 1</span> และ <span class="mono">/RD = 0</span> — RAM ส่งข้อมูลออกทาง D7–D0</div>
+    </div>
+    <div class="card warning" style="margin-top:14px">
+      <p><strong>ทำไมในรูปจึงต่อ /WR → /WE ได้ตรง ๆ:</strong> 74x154 ถูกเปิดด้วย <span class="mono">/MREQ</span> อยู่แล้ว จึงมี <span class="mono">/CE_RAM = 0</span> เฉพาะ Memory cycle หาก decoder ไม่ได้ใช้ /MREQ ต้องสร้าง <span class="mono">/MEMWR = /MREQ OR /WR</span> แล้วจึงต่อ /MEMWR ไป /WE</p>
+    </div>
+  </section>
+
+  <section id="io-detail">
+    <h2>ซูมส่วน I/O: เส้นไหนเข้าขาไหน</h2>
+    <p class="kicker">ตัวอย่างตามเอกสาร: Input port 84H และ Output port 07H — เวลาเจอโจทย์จริงเปลี่ยนเพียงเลขพอร์ตและเอาต์พุต decoder</p>
+    <div class="schematic-scroll" tabindex="0" aria-label="วงจร input buffer และ output latch เลื่อนซ้ายขวาได้">
+      <svg class="memory-schematic" viewBox="0 0 1000 520" role="img" aria-labelledby="io-title io-desc">
+        <title id="io-title">การต่อ input buffer และ output latch กับ Z80</title>
+        <desc id="io-desc">A7 ถึง A0 เข้า I/O decoder สัญญาณ IORQ และ RD สร้าง output enable ของ input buffer ส่วน IORQ และ WR สร้าง latch enable ของ output latch</desc>
+        <defs>
+          <marker id="io-address" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+          <marker id="io-data" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7b3fa0"/></marker>
+          <marker id="io-control" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ad3152"/></marker>
+          <marker id="io-select" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
+        </defs>
+
+        <rect x="15" y="15" width="970" height="230" rx="17" fill="#f8f5ed" stroke="#17222b" stroke-width="2"/>
+        <text x="38" y="50" font-size="21" font-weight="900">IN A,(84H) · อ่านจาก Input buffer</text>
+        <rect x="40" y="75" width="150" height="145" rx="13" fill="#102e3b"/>
+        <text x="115" y="109" text-anchor="middle" font-size="20" font-weight="900" fill="white" style="fill:white">Z80 bus</text>
+        <text x="115" y="142" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">A7–A0</text>
+        <text x="115" y="174" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">/IORQ · /RD</text>
+        <text x="115" y="206" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+        <rect x="260" y="74" width="175" height="95" rx="12" fill="#dff0f5" stroke="#087e8b" stroke-width="2"/>
+        <text x="347" y="108" text-anchor="middle" font-size="19" font-weight="900">I/O Decoder</text>
+        <text x="347" y="139" text-anchor="middle" font-size="15" class="mono-svg">84H → /SEL84</text>
+        <rect x="500" y="74" width="185" height="95" rx="12" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+        <text x="592" y="107" text-anchor="middle" font-size="18" font-weight="900">Read gate</text>
+        <text x="592" y="138" text-anchor="middle" font-size="13" class="mono-svg">/SEL84 + /IORQ + /RD</text>
+        <rect x="755" y="64" width="195" height="165" rx="13" fill="#e8f4f1" stroke="#2f7565" stroke-width="3"/>
+        <text x="852" y="102" text-anchor="middle" font-size="21" font-weight="900">Input Buffer</text>
+        <text x="852" y="132" text-anchor="middle" font-size="15">74LS244 / 245</text>
+        <text x="774" y="164" font-size="15" class="mono-svg">/OE ← /IORD_IN</text>
+        <text x="852" y="198" text-anchor="middle" font-size="14">ขาภายนอก → D7–D0</text>
+        <line x1="190" y1="137" x2="260" y2="112" stroke="#087e8b" stroke-width="4" marker-end="url(#io-address)"/>
+        <line x1="435" y1="112" x2="500" y2="112" stroke="#4774b8" stroke-width="4" marker-end="url(#io-select)"/>
+        <path d="M190 171H220V184H470V150H500" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#io-control)"/>
+        <line x1="685" y1="112" x2="755" y2="112" stroke="#ad3152" stroke-width="4" marker-end="url(#io-control)"/>
+        <text x="720" y="98" text-anchor="middle" font-size="13" class="mono-svg">/IORD_IN</text>
+        <line x1="755" y1="201" x2="190" y2="201" stroke="#7b3fa0" stroke-width="4" marker-end="url(#io-data)"/>
+
+        <rect x="15" y="270" width="970" height="235" rx="17" fill="#f8f5ed" stroke="#17222b" stroke-width="2"/>
+        <text x="38" y="305" font-size="21" font-weight="900">OUT (07H),A · เขียนเข้า Output latch</text>
+        <rect x="40" y="330" width="150" height="145" rx="13" fill="#102e3b"/>
+        <text x="115" y="364" text-anchor="middle" font-size="20" font-weight="900" fill="white" style="fill:white">Z80 bus</text>
+        <text x="115" y="397" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">A7–A0</text>
+        <text x="115" y="429" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">/IORQ · /WR</text>
+        <text x="115" y="461" text-anchor="middle" font-size="15" class="mono-svg" fill="white" style="fill:white">D7–D0</text>
+        <rect x="260" y="329" width="175" height="95" rx="12" fill="#dff0f5" stroke="#087e8b" stroke-width="2"/>
+        <text x="347" y="363" text-anchor="middle" font-size="19" font-weight="900">I/O Decoder</text>
+        <text x="347" y="394" text-anchor="middle" font-size="15" class="mono-svg">07H → /SEL07</text>
+        <rect x="500" y="329" width="185" height="95" rx="12" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+        <text x="592" y="362" text-anchor="middle" font-size="18" font-weight="900">Write gate</text>
+        <text x="592" y="393" text-anchor="middle" font-size="12" class="mono-svg">NOT(/SEL07+/IORQ+/WR)</text>
+        <rect x="755" y="319" width="195" height="165" rx="13" fill="#fff0d1" stroke="#b55c00" stroke-width="3"/>
+        <text x="852" y="357" text-anchor="middle" font-size="21" font-weight="900">Output Latch</text>
+        <text x="852" y="387" text-anchor="middle" font-size="15">74LS373 / 374</text>
+        <text x="774" y="419" font-size="15" class="mono-svg">LE ← LE_OUT</text>
+        <text x="852" y="453" text-anchor="middle" font-size="14">D7–D0 → ขาภายนอก</text>
+        <line x1="190" y1="392" x2="260" y2="367" stroke="#087e8b" stroke-width="4" marker-end="url(#io-address)"/>
+        <line x1="435" y1="367" x2="500" y2="367" stroke="#4774b8" stroke-width="4" marker-end="url(#io-select)"/>
+        <path d="M190 426H220V439H470V405H500" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#io-control)"/>
+        <line x1="685" y1="367" x2="755" y2="367" stroke="#ad3152" stroke-width="4" marker-end="url(#io-control)"/>
+        <text x="720" y="353" text-anchor="middle" font-size="13" class="mono-svg">LE_OUT = 1</text>
+        <line x1="190" y1="456" x2="755" y2="456" stroke="#7b3fa0" stroke-width="4" marker-end="url(#io-data)"/>
+      </svg>
+    </div>
+    <p class="scroll-hint">← รูปซูมแยก IN/OUT เพื่อให้ลูกศรไม่ทับกัน บนโทรศัพท์ลากซ้าย–ขวาได้ →</p>
+    <div class="grid-2" style="margin-top:14px">
+      <div class="card"><h3>Input ใช้ /RD</h3><p>เมื่อ Port = 84H และ <span class="mono">/IORQ=0, /RD=0</span> จะได้ <span class="mono">/OE=0</span> ทำให้ buffer ส่งข้อมูลจากภายนอกเข้าบัส</p></div>
+      <div class="card"><h3>Output ใช้ /WR</h3><p>เมื่อ Port = 07H และ <span class="mono">/IORQ=0, /WR=0</span> วงจรสร้าง <span class="mono">LE=1</span> ให้ latch เก็บค่าจาก D7–D0</p></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Checklist ก่อนส่งรูปวงจรข้อ 1</h2>
+    <ul>
+      <li>A11–A0 แตกแขนงเข้าขา Address ของ ROM และ RAM ครบ 12 เส้น</li>
+      <li>D7–D0 เป็นบัสร่วม 8 เส้น และระบุทิศทางสองทางที่ RAM</li>
+      <li>A15–A12 เข้า 74x154 และ /MREQ เข้า Enable</li>
+      <li>Y0 ไป /CE_ROM, Y1 ไป /CE_RAM</li>
+      <li>/RD ไป /OE ทั้งสองชิป; /WR ไป /WE ของ RAM เท่านั้น</li>
+      <li>เขียนช่วง Address ใต้ชิปทุกตัว</li>
+      <li>A7–A0 เข้า I/O decoder และเขียน Port number ของ Input/Output</li>
+      <li>Input buffer ใช้ /IORQ + /RD; Output latch ใช้ /IORQ + /WR</li>
+      <li>D7–D0 ของ Memory และ I/O ทุกตัวอยู่บน Data bus เดียวกัน</li>
+    </ul>
+  </section>
+
+  <section id="quiz" class="quiz">
+    <h2>ดึงจากความจำ</h2>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="1ABCH มีบิตบน 0001 จึงเลือก RAM และบิตล่างคือ ABCH">
+      <div class="quiz-context">
+        <strong>วงจรอ้างอิงของข้อนี้</strong> — ROM และ RAM อย่างละ 4K
+        <div class="mini-map" aria-label="ROM ช่วง 0000 ถึง 0FFF และ RAM ช่วง 1000 ถึง 1FFF">
+          <div class="mini-rom"><span class="mono">0000–0FFF</span><br>ROM · Y0</div>
+          <div class="mini-ram"><span class="mono">1000–1FFF</span><br>RAM · Y1</div>
+        </div>
+      </div>
+      <h3>1) จากวงจรอ้างอิง Address 1ABCH เลือกอะไร?</h3>
+      <div class="choices">
+        <button class="choice" data-choice="A">ROM ภายใน ABCH</button>
+        <button class="choice" data-choice="B">RAM ภายใน ABCH</button>
+        <button class="choice" data-choice="C">ROM ภายใน 1ABCH</button>
+        <button class="choice" data-choice="D">RAM ภายใน 1ABCH</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="/WR เป็นสัญญาณเขียน ส่วน /MREQ ถูกใช้ enable decoder ในวงจรนี้">
+      <div class="quiz-context">
+        <strong>ดูทิศทางก่อนตอบ</strong>
+        <div class="mini-wire" aria-label="ขา WR ของ Z80 ต่อไปยังขา WE ของ RAM"><span>Z80 /WR</span><b aria-hidden="true">→</b><span>RAM /WE</span></div>
+      </div>
+      <h3>2) ในวงจรที่ decoder ถูก enable ด้วย /MREQ ขาใดต่อเข้า /WE ของ RAM?</h3>
+      <div class="choices">
+        <button class="choice mono" data-choice="A">/RD</button>
+        <button class="choice mono" data-choice="B">/WR</button>
+        <button class="choice mono" data-choice="C">/MREQ</button>
+        <button class="choice mono" data-choice="D">/IORQ</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="A" data-explain="Y0 ถูกกำหนดให้เลือก ROM ในช่วง 0000H–0FFFH">
+      <div class="quiz-context">
+        <strong>เส้น Chip Select ของวงจรอ้างอิง</strong>
+        <div class="mini-wire" aria-label="เอาต์พุต Y0 ของ decoder ต่อไปยัง CE ของ ROM"><span>74x154 Y0</span><b aria-hidden="true">→</b><span>ROM /CE</span></div>
+      </div>
+      <h3>3) จาก Memory map ที่กำหนด เอาต์พุต Y0 ต้องต่อเข้าขาใด?</h3>
+      <div class="choices">
+        <button class="choice" data-choice="A">/CE ของ ROM</button>
+        <button class="choice" data-choice="B">/CE ของ RAM</button>
+        <button class="choice" data-choice="C">/OE ของ ROM</button>
+        <button class="choice" data-choice="D">/WE ของ RAM</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="IN เป็นการอ่าน I/O จึงใช้ /IORQ และ /RD ร่วมกับผล decode ของพอร์ต 84H เพื่อเปิด /OE ของ input buffer">
+      <div class="quiz-context"><strong>เส้นทางอ่าน Input</strong><div class="mini-wire"><span>Port 84H</span><b aria-hidden="true">→</b><span>Input buffer</span></div></div>
+      <h3>4) สัญญาณคู่ใดต้อง active ระหว่าง IN A,(84H)?</h3>
+      <div class="choices">
+        <button class="choice mono" data-choice="A">/MREQ + /RD</button>
+        <button class="choice mono" data-choice="B">/MREQ + /WR</button>
+        <button class="choice mono" data-choice="C">/IORQ + /RD</button>
+        <button class="choice mono" data-choice="D">/IORQ + /WR</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+    <article class="card quiz-card" data-quiz data-answer="D" data-explain="OUT เป็นการเขียน I/O จึงใช้ /IORQ และ /WR; วงจร gate แปลงสัญญาณ active-low ให้เป็น LE=1 ของ latch">
+      <div class="quiz-context"><strong>เส้นทางเขียน Output</strong><div class="mini-wire"><span>Z80 D7–D0</span><b aria-hidden="true">→</b><span>Output latch</span></div></div>
+      <h3>5) สัญญาณคู่ใดใช้ทำให้ Output latch รับค่าระหว่าง OUT (07H),A?</h3>
+      <div class="choices">
+        <button class="choice mono" data-choice="A">/MREQ + /RD</button>
+        <button class="choice mono" data-choice="B">/MREQ + /WR</button>
+        <button class="choice mono" data-choice="C">/IORQ + /RD</button>
+        <button class="choice mono" data-choice="D">/IORQ + /WR</button>
+      </div>
+      <p class="feedback" aria-live="polite"></p>
+    </article>
+  </section>
+
+  <section class="card">
+    <h2>Exit ticket</h2>
+    <p>ตอบโดยไม่ย้อนดูรูป:</p>
+    <ol>
+      <li><span class="mono">0E21H</span> เลือกชิปใด และเป็นตำแหน่งใดภายในชิป?</li>
+      <li>เติมการต่อให้ครบ: <span class="mono">Y1 → ?</span>, <span class="mono">/RD → ?</span> และ <span class="mono">/WR → ?</span></li>
+      <li>อธิบายทิศทาง D7–D0 ของ Input buffer และ Output latch คนละหนึ่งประโยค</li>
+    </ol>
+    <p>ถ้าตอบได้ ให้ลองปิดรูปแล้ววาดวงจรรวมตั้งแต่ Z80 จนถึงชิปทุกตัวหนึ่งรอบ จึงถือว่าพร้อมไปข้อ 2</p>
+  </section>
+
+  <footer class="footer">
+    <a href="0001-z80-three-buses.html">← บท 0: พื้นฐานร่วม</a> · อ้างอิงเอกสารรายวิชา หน้า 58–64 ·
+    <a href="https://www.zilog.com/docs/z80/um0080.pdf">Zilog Z80 CPU User Manual</a> ·
+    <a href="https://www.ti.com/product/CD74HC154">TI 4-to-16 Decoder</a> ·
+    <a href="0003-access-and-foldback.html">ไปข้อ 2 →</a> ·
+    <a href="../reference/0001-z80-exam-map.html">แผนที่ข้อสอบ</a>
+  </footer>
+</main>
+<script src="../assets/memory-layout.js"></script>
+<script src="../assets/address-decoder.js"></script>
+<script src="../assets/quiz.js"></script>
+</body>
+</html>
