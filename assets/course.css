@@ -265,6 +265,13 @@ h3 { margin: 0 0 8px; font-size: 1.12rem; }
 .system-schematic .mono-svg { font-family: Consolas, monospace; font-weight: 800; }
 .system-schematic path[stroke="#fffef9"] { display: none; }
 .system-schematic path.control-halo { display: block; }
+.legacy-schematic { display: none !important; }
+.legacy-scroll { display: none !important; }
+.teaching-diagram { display: block; width: 100%; min-width: 1040px; height: auto; }
+.full-answer-sheet { border: 2px solid var(--ink); border-radius: 18px; padding: 12px; background: #fffef9; }
+.answer-sheet-label { display: inline-block; margin: 4px 0 8px; padding: 5px 12px; border-radius: 999px; background: var(--ink); color: white; font-weight: 900; }
+.full-answer-sheet .schematic-scroll { margin-bottom: 14px; border-color: #cfc7b9; }
+.full-answer-sheet .schematic-scroll:last-child { margin-bottom: 0; }
 .schematic-legend { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 9px; }
 .legend-chip { display: inline-flex; align-items: center; gap: 7px; padding: 5px 9px; border: 1px solid var(--line); border-radius: 999px; background: white; font-size: .86rem; }
 .legend-chip::before { content: ""; width: 18px; height: 4px; border-radius: 4px; background: currentColor; }

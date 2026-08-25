@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 650" role="img" aria-labelledby="title desc">
+  <title id="title">วงจรต่อประสาน Z80 กับ ROM และ RAM ตามรูปแบบในเอกสาร</title>
+  <desc id="desc">A15 ถึง A12 เข้า 74LS154 เพื่อสร้าง chip select, A11 ถึง A0 เข้าชิปโดยตรง, และวงจร logic สร้าง MEMRD กับ MEMWR สำหรับ OE และ WE</desc>
+  <defs>
+    <style>
+      text{font-family:"Leelawadee UI",Tahoma,sans-serif;fill:#17222b} .m{font-family:Consolas,monospace;font-weight:700}
+      .a{stroke:#087e8b;fill:none}.d{stroke:#7b3fa0;fill:none}.c{stroke:#ad3152;fill:none}.s{stroke:#4774b8;fill:none}
+      .wire{stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.bus{stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+      .pin{font-size:14px}.label{font-size:16px;font-weight:800}.small{font-size:13px}.bubble{fill:#fffef9;stroke:#ad3152;stroke-width:2.5}
+    </style>
+    <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+    <marker id="ad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7b3fa0"/></marker>
+    <marker id="as" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="634" rx="18" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+  <text x="36" y="43" font-size="20" font-weight="900">วงจร Memory แบบ Full decoding · ROM 0000H–0FFFH · RAM 1000H–1FFFH</text>
+
+  <!-- CPU with real pin names -->
+  <rect x="35" y="92" width="175" height="472" rx="14" fill="#102e3b"/>
+  <text x="122" y="130" text-anchor="middle" font-size="25" font-weight="900" fill="white" style="fill:white">Z80 CPU</text>
+  <text x="190" y="184" text-anchor="end" class="m pin" fill="white" style="fill:white">A15–A12</text>
+  <text x="190" y="284" text-anchor="end" class="m pin" fill="white" style="fill:white">A11–A0</text>
+  <text x="190" y="334" text-anchor="end" class="m pin" fill="white" style="fill:white">D7–D0</text>
+  <text x="190" y="394" text-anchor="end" class="m pin" fill="white" style="fill:white">/MREQ</text>
+  <text x="190" y="446" text-anchor="end" class="m pin" fill="white" style="fill:white">/RD</text>
+  <text x="190" y="530" text-anchor="end" class="m pin" fill="white" style="fill:white">/WR</text>
+
+  <!-- decode lane -->
+  <path d="M210 180H330" class="a bus" marker-end="url(#aa)"/>
+  <rect x="330" y="85" width="230" height="180" rx="12" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <text x="445" y="120" text-anchor="middle" font-size="23" font-weight="900">74LS154</text>
+  <text x="350" y="157" class="m pin">D,C,B,A ← A15–A12</text>
+  <text x="350" y="190" class="m pin">/E1, /E2 ← GND</text>
+  <text x="540" y="222" text-anchor="end" class="m pin">Y0</text>
+  <text x="540" y="250" text-anchor="end" class="m pin">Y1</text>
+  <text x="268" y="166" text-anchor="middle" class="m small" fill="#087e8b" style="fill:#087e8b">4 บิต</text>
+
+  <!-- memory devices -->
+  <rect x="835" y="72" width="310" height="232" rx="13" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
+  <text x="990" y="110" text-anchor="middle" font-size="24" font-weight="900">ROM 4K × 8</text>
+  <text x="990" y="139" text-anchor="middle" class="m label">0000H–0FFFH</text>
+  <text x="852" y="183" class="m pin">A0–A11</text><text x="1128" y="183" text-anchor="end" class="m pin">D0–D7</text>
+  <text x="852" y="225" class="m pin">/CE</text><text x="852" y="267" class="m pin">/OE</text>
+  <circle cx="835" cy="220" r="5" fill="#fffef9" stroke="#4774b8" stroke-width="2.5"/>
+  <circle cx="835" cy="262" r="5" fill="#fffef9" stroke="#ad3152" stroke-width="2.5"/>
+
+  <rect x="835" y="350" width="310" height="250" rx="13" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
+  <text x="990" y="388" text-anchor="middle" font-size="24" font-weight="900">RAM 4K × 8</text>
+  <text x="990" y="417" text-anchor="middle" class="m label">1000H–1FFFH</text>
+  <text x="852" y="458" class="m pin">A0–A11</text><text x="1128" y="458" text-anchor="end" class="m pin">D0–D7</text>
+  <text x="852" y="500" class="m pin">/CE</text><text x="852" y="542" class="m pin">/OE</text><text x="852" y="579" class="m pin">/WE</text>
+  <circle cx="835" cy="495" r="5" fill="#fffef9" stroke="#4774b8" stroke-width="2.5"/>
+  <circle cx="835" cy="537" r="5" fill="#fffef9" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="835" cy="574" r="5" fill="#fffef9" stroke="#ad3152" stroke-width="2.5"/>
+
+  <!-- select wiring, orthogonal and separated -->
+  <path d="M560 218H690V220H830" class="s wire" marker-end="url(#as)"/>
+  <path d="M560 248H650V495H830" class="s wire" marker-end="url(#as)"/>
+  <text x="625" y="207" class="m small" fill="#4774b8" style="fill:#4774b8">Y0=0 → /CE_ROM</text>
+  <text x="660" y="485" class="m small" fill="#4774b8" style="fill:#4774b8">Y1=0 → /CE_RAM</text>
+
+  <!-- address/data nets use named rails; junction dots show branches -->
+  <path d="M210 280H760V172H835" class="a bus" marker-end="url(#aa)"/>
+  <path d="M760 280V447H835" class="a bus" marker-end="url(#aa)"/>
+  <circle cx="760" cy="280" r="5" fill="#087e8b"/>
+  <rect x="574" y="266" width="45" height="24" rx="5" fill="#fffef9" stroke="#087e8b"/><text x="596" y="283" text-anchor="middle" class="m small">12</text>
+  <text x="625" y="303" class="m small" fill="#087e8b" style="fill:#087e8b">A11–A0 เข้าชิปโดยตรง</text>
+  <path d="M210 330H790V188H1145" class="d bus" marker-end="url(#ad)" marker-start="url(#ad)"/>
+  <path d="M790 330V463H1145" class="d bus" marker-end="url(#ad)" marker-start="url(#ad)"/>
+  <circle cx="790" cy="330" r="5" fill="#7b3fa0"/>
+  <rect x="574" y="316" width="45" height="24" rx="5" fill="#fffef9" stroke="#7b3fa0"/><text x="596" y="333" text-anchor="middle" class="m small">8</text>
+
+  <!-- bubble-logic control gates: Y = input1 OR input2 -->
+  <text x="280" y="365" class="label">วงจรสร้างสัญญาณควบคุมแบบในสื่อ</text>
+  <path d="M210 390H275V401H304M210 442H275V425H304" class="c wire"/>
+  <circle cx="310" cy="401" r="6" class="bubble"/><circle cx="310" cy="425" r="6" class="bubble"/>
+  <path d="M318 390H344C375 390 389 403 389 413C389 423 375 436 344 436H318C331 424 331 402 318 390Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="397" cy="413" r="6" class="bubble"/>
+  <path d="M403 413H610V262H830" class="c wire"/>
+  <circle cx="610" cy="413" r="5" fill="#ad3152"/>
+  <path d="M610 413V537H830" class="c wire"/>
+  <text x="430" y="398" class="m small" fill="#ad3152" style="fill:#ad3152">/MEMRD</text>
+  <text x="430" y="430" class="m small">= /MREQ OR /RD</text>
+
+  <path d="M210 392H240V493H304M210 526H275V517H304" class="c wire"/>
+  <circle cx="310" cy="493" r="6" class="bubble"/><circle cx="310" cy="517" r="6" class="bubble"/>
+  <path d="M318 482H344C375 482 389 495 389 505C389 515 375 528 344 528H318C331 516 331 494 318 482Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="397" cy="505" r="6" class="bubble"/>
+  <path d="M403 505H710V574H830" class="c wire"/>
+  <text x="430" y="490" class="m small" fill="#ad3152" style="fill:#ad3152">/MEMWR</text>
+  <text x="430" y="522" class="m small">= /MREQ OR /WR</text>
+
+  <text x="36" y="625" class="small">วงกลมเล็กที่ขาเกต/ขาชิปหมายถึง active-low · จุดทึบหมายถึงสายเชื่อมกันจริง · เส้นตัดที่ไม่มีจุดไม่ใช่จุดต่อ</text>
+</svg>

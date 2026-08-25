@@ -41,9 +41,15 @@
 
   <section id="full-system">
     <h2>ภาพคำตอบสุดท้ายของข้อ 1</h2>
-    <p class="kicker">โครงเดียวกับภาพตัวอย่าง: CPU อยู่ซ้าย บัสเป็นแกนกลาง Decoder เลือกชิป และทุกอุปกรณ์ต่อเข้าบัสร่วม</p>
-    <div class="schematic-scroll" tabindex="0" aria-label="วงจรรวม Z80 ต่อ ROM RAM input buffer และ output latch เลื่อนซ้ายขวาได้">
-      <svg class="system-schematic" viewBox="0 0 1200 800" role="img" aria-labelledby="system-title system-desc">
+    <p class="kicker">รูปแบบเดียวกับสื่อสอน: Decoder ทำหน้าที่เลือกชิป ส่วน logic gate สร้างสัญญาณอ่าน–เขียน และชื่อขาถูกเขียนติดกับขอบอุปกรณ์ทุกจุด</p>
+    <div class="full-answer-sheet">
+      <div class="answer-sheet-label">ส่วน Memory</div>
+      <div class="schematic-scroll" tabindex="0"><img class="teaching-diagram" src="../assets/z80-memory-teaching.svg" alt="วงจร Z80 ต่อ ROM RAM โดยใช้ 74LS154 และ logic gate สร้าง MEMRD MEMWR"></div>
+      <div class="answer-sheet-label">ส่วน I/O</div>
+      <div class="schematic-scroll" tabindex="0"><img class="teaching-diagram" src="../assets/z80-io-teaching.svg" alt="วงจร Z80 ต่อ input buffer และ output latch โดยใช้ I/O decoder และ logic gate"></div>
+    </div>
+    <div class="schematic-scroll legacy-scroll" tabindex="0" aria-label="วงจรรวม Z80 ต่อ ROM RAM input buffer และ output latch เลื่อนซ้ายขวาได้">
+      <svg class="system-schematic legacy-schematic" viewBox="0 0 1200 800" role="img" aria-labelledby="system-title system-desc">
         <title id="system-title">วงจรรวม Z80 กับหน่วยความจำและอุปกรณ์ I/O</title>
         <desc id="system-desc">Z80 ต่อ address bus เข้าตัวถอดรหัส ROM RAM และ I/O decoder ต่อ data bus ร่วม และต่อ MREQ IORQ RD WR เพื่อควบคุมอุปกรณ์</desc>
         <defs>
@@ -189,9 +195,12 @@
 
   <section id="schematic">
     <h2>ซูมส่วน Memory จากรูปคำตอบรวม</h2>
-    <p class="kicker">แยกเป็น 3 แผงเพื่อไม่ให้สายไขว้กัน: Decode บิตสูง → ต่อ ROM → ต่อ RAM</p>
-    <div class="schematic-scroll" tabindex="0" aria-label="แผนผังวงจร Z80 ต่อ ROM RAM และ address decoder เลื่อนซ้ายขวาได้">
-      <svg class="memory-schematic" viewBox="0 0 1100 720" role="img" aria-labelledby="schematic-title schematic-desc">
+    <p class="kicker">อ่านจากซ้ายไปขวา: บิตสูงเข้า Decoder, บิตต่ำเข้าชิปโดยตรง, Data เป็นบัสร่วม และสัญญาณจาก logic gate เข้าขา /OE หรือ /WE</p>
+    <div class="schematic-scroll" tabindex="0" aria-label="วงจร Memory แบบเดียวกับสื่อสอน เลื่อนซ้ายขวาได้">
+      <img class="teaching-diagram" src="../assets/z80-memory-teaching.svg" alt="วงจร Z80 ต่อ ROM RAM พร้อมขา address data CE OE WE และ logic gate">
+    </div>
+    <div class="schematic-scroll legacy-scroll" tabindex="0" aria-label="แผนผังวงจร Z80 ต่อ ROM RAM และ address decoder เลื่อนซ้ายขวาได้">
+      <svg class="memory-schematic legacy-schematic" viewBox="0 0 1100 720" role="img" aria-labelledby="schematic-title schematic-desc">
         <title id="schematic-title">วงจร Z80 ต่อ ROM 4K และ RAM 4K</title>
         <desc id="schematic-desc">A15 ถึง A12 และ MREQ ต่อเข้า 74x154; Y0 เลือก ROM, Y1 เลือก RAM; A11 ถึง A0 และ D7 ถึง D0 ต่อเข้าชิป; RD ต่อ OE และ WR ต่อ WE ของ RAM</desc>
         <defs>
@@ -358,10 +367,10 @@
       </div>
       <div class="decoder-stage">
         <div class="decoder-chip">
-          <div><strong>74x154</strong><br>4-to-16 Decoder<br><span class="mono">D,C,B,A รับ A15–A12</span><br><span class="mono">/E1 รับ /MREQ</span><br><span class="mono">/E2 ต่อ GND</span></div>
+          <div><strong>74LS154</strong><br>4-to-16 Decoder<br><span class="mono">D,C,B,A รับ A15–A12</span><br><span class="mono">/E1 และ /E2 ต่อ GND</span><br><span>ทำหน้าที่สร้าง /CE เท่านั้น</span></div>
         </div>
         <div class="shared-lines">
-          <div><strong>สายที่แยกไปทั้งสองชิป</strong><br><span class="mono">A11–A0 ต่อเข้า Address pins</span><br><span class="mono">D7–D0 เชื่อม Data bus ร่วม</span><br><span class="mono">/RD ต่อเข้า /OE ทั้งคู่</span><br><span class="mono">/WR ต่อเข้า /WE เฉพาะ RAM</span></div>
+          <div><strong>สายที่แยกไปทั้งสองชิป</strong><br><span class="mono">A11–A0 ต่อเข้า Address pins</span><br><span class="mono">D7–D0 เชื่อม Data bus ร่วม</span><br><span class="mono">/MEMRD ต่อเข้า /OE ทั้งคู่</span><br><span class="mono">/MEMWR ต่อเข้า /WE เฉพาะ RAM</span></div>
         </div>
       </div>
       <div class="output-arrows" aria-label="เอาต์พุต decoder ไปยัง chip enable">
@@ -375,7 +384,7 @@
             <div class="pin-line"><span>A11–A0</span><span>รับจาก Z80</span></div>
             <div class="pin-line"><span>D7–D0</span><span>ส่งเข้า Data bus</span></div>
             <div class="pin-line"><span>/CE</span><span>รับจาก Y0</span></div>
-            <div class="pin-line"><span>/OE</span><span>รับจาก /RD</span></div>
+            <div class="pin-line"><span>/OE</span><span>รับจาก /MEMRD</span></div>
             <div class="pin-line"><span>/WE</span><span>ไม่มี/ตรึงไม่ให้เขียน</span></div>
           </div>
         </article>
@@ -385,15 +394,15 @@
             <div class="pin-line"><span>A11–A0</span><span>รับจาก Z80</span></div>
             <div class="pin-line"><span>D7–D0</span><span>เชื่อมสองทาง</span></div>
             <div class="pin-line"><span>/CE</span><span>รับจาก Y1</span></div>
-            <div class="pin-line"><span>/OE</span><span>รับจาก /RD</span></div>
-            <div class="pin-line"><span>/WE</span><span>รับจาก /WR</span></div>
+            <div class="pin-line"><span>/OE</span><span>รับจาก /MEMRD</span></div>
+            <div class="pin-line"><span>/WE</span><span>รับจาก /MEMWR</span></div>
           </div>
         </article>
       </div>
     </div>
     <div class="card warning" style="margin-top:14px">
-      <h3>ทำไมต่อ /RD และ /WR ตรงได้?</h3>
-      <p>วงจรนี้ใช้ <span class="mono">/MREQ</span> enable ตัว decoder อยู่แล้ว ดังนั้น ROM/RAM จะได้รับ <span class="mono">/CE=0</span> เฉพาะ Memory cycle เท่านั้น ถ้าออกแบบ decoder ไม่ได้ gate ด้วย /MREQ จึงค่อยสร้าง <span class="mono">/MEMRD = /MREQ OR /RD</span> และ <span class="mono">/MEMWR = /MREQ OR /WR</span> แทน</p>
+      <h3>Decoder เลือกชิป แต่ logic gate เลือกการอ่านหรือเขียน</h3>
+      <p><span class="mono">A15–A12</span> เข้า 74LS154 เพื่อสร้าง <span class="mono">/CE</span> เท่านั้น ส่วน <span class="mono">/MEMRD = /MREQ OR /RD</span> ต่อไปยัง <span class="mono">/OE</span> และ <span class="mono">/MEMWR = /MREQ OR /WR</span> ต่อไปยัง <span class="mono">/WE</span> ของ RAM วิธีนี้ตรงกับรูปในสื่อและกันไม่ให้ I/O cycle ไปเปิดขาอ่าน–เขียนของ Memory</p>
     </div>
   </section>
 
@@ -436,24 +445,29 @@
     <h2>ก่อนทำแบบทดสอบ: /WE ของ RAM มาจากไหน</h2>
     <p class="kicker"><span class="mono">/WE = Write Enable</span> เป็นขาอนุญาตให้ RAM รับข้อมูลเข้าไปเก็บ และเครื่องหมาย / หมายถึงทำงานเมื่อเป็น 0</p>
     <div class="we-flow" aria-label="สัญญาณเขียนจาก Z80 ไปยัง RAM">
-      <div class="we-node">Z80 /WR</div>
+      <div class="we-node">/MREQ + /WR</div>
+      <div class="we-arrow" aria-hidden="true">→</div>
+      <div class="we-node">logic gate → /MEMWR</div>
       <div class="we-arrow" aria-hidden="true">→</div>
       <div class="we-node">RAM /WE</div>
     </div>
     <div class="write-cases">
-      <div class="write-case active"><strong>เขียน RAM</strong><br><span class="mono">/CE_RAM = 0</span> และ <span class="mono">/WR = 0</span> ทำให้ <span class="mono">/WE = 0</span> — RAM เก็บค่าที่อยู่บน D7–D0</div>
-      <div class="write-case"><strong>อ่าน RAM</strong><br><span class="mono">/CE_RAM = 0</span>, <span class="mono">/WR = 1</span> และ <span class="mono">/RD = 0</span> — RAM ส่งข้อมูลออกทาง D7–D0</div>
+      <div class="write-case active"><strong>เขียน RAM</strong><br><span class="mono">/MREQ=0</span> และ <span class="mono">/WR=0</span> ทำให้ <span class="mono">/MEMWR=0 → /WE=0</span> — RAM เก็บค่าบน D7–D0</div>
+      <div class="write-case"><strong>อ่าน RAM</strong><br><span class="mono">/MREQ=0</span> และ <span class="mono">/RD=0</span> ทำให้ <span class="mono">/MEMRD=0 → /OE=0</span> — RAM ส่งข้อมูลออกทาง D7–D0</div>
     </div>
     <div class="card warning" style="margin-top:14px">
-      <p><strong>ทำไมในรูปจึงต่อ /WR → /WE ได้ตรง ๆ:</strong> 74x154 ถูกเปิดด้วย <span class="mono">/MREQ</span> อยู่แล้ว จึงมี <span class="mono">/CE_RAM = 0</span> เฉพาะ Memory cycle หาก decoder ไม่ได้ใช้ /MREQ ต้องสร้าง <span class="mono">/MEMWR = /MREQ OR /WR</span> แล้วจึงต่อ /MEMWR ไป /WE</p>
+      <p><strong>จำเป็นคู่:</strong> <span class="mono">/MEMRD</span> ไป <span class="mono">/OE</span>, <span class="mono">/MEMWR</span> ไป <span class="mono">/WE</span> ส่วน <span class="mono">Y0/Y1</span> ไป <span class="mono">/CE</span> — จึงไม่สลับหน้าที่กัน</p>
     </div>
   </section>
 
   <section id="io-detail">
     <h2>ซูมส่วน I/O: เส้นไหนเข้าขาไหน</h2>
     <p class="kicker">ตัวอย่างตามเอกสาร: Input port 84H และ Output port 07H — เวลาเจอโจทย์จริงเปลี่ยนเพียงเลขพอร์ตและเอาต์พุต decoder</p>
-    <div class="schematic-scroll" tabindex="0" aria-label="วงจร input buffer และ output latch เลื่อนซ้ายขวาได้">
-      <svg class="memory-schematic" viewBox="0 0 1000 520" role="img" aria-labelledby="io-title io-desc">
+    <div class="schematic-scroll" tabindex="0" aria-label="วงจร I/O แบบเดียวกับสื่อสอน เลื่อนซ้ายขวาได้">
+      <img class="teaching-diagram" src="../assets/z80-io-teaching.svg" alt="วงจร input buffer และ output latch พร้อม logic gate และชื่อขา">
+    </div>
+    <div class="schematic-scroll legacy-scroll" tabindex="0" aria-label="วงจร input buffer และ output latch เลื่อนซ้ายขวาได้">
+      <svg class="memory-schematic legacy-schematic" viewBox="0 0 1000 520" role="img" aria-labelledby="io-title io-desc">
         <title id="io-title">การต่อ input buffer และ output latch กับ Z80</title>
         <desc id="io-desc">A7 ถึง A0 เข้า I/O decoder สัญญาณ IORQ และ RD สร้าง output enable ของ input buffer ส่วน IORQ และ WR สร้าง latch enable ของ output latch</desc>
         <defs>
@@ -526,12 +540,12 @@
     <ul>
       <li>A11–A0 แตกแขนงเข้าขา Address ของ ROM และ RAM ครบ 12 เส้น</li>
       <li>D7–D0 เป็นบัสร่วม 8 เส้น และระบุทิศทางสองทางที่ RAM</li>
-      <li>A15–A12 เข้า 74x154 และ /MREQ เข้า Enable</li>
+      <li>A15–A12 เข้า 74LS154; ขา Enable ของ decoder ถูกเปิดใช้งาน และ Y0/Y1 ทำหน้าที่เลือกชิป</li>
       <li>Y0 ไป /CE_ROM, Y1 ไป /CE_RAM</li>
-      <li>/RD ไป /OE ทั้งสองชิป; /WR ไป /WE ของ RAM เท่านั้น</li>
+      <li>/MEMRD = /MREQ OR /RD ไป /OE ทั้งสองชิป; /MEMWR = /MREQ OR /WR ไป /WE ของ RAM</li>
       <li>เขียนช่วง Address ใต้ชิปทุกตัว</li>
       <li>A7–A0 เข้า I/O decoder และเขียน Port number ของ Input/Output</li>
-      <li>Input buffer ใช้ /IORQ + /RD; Output latch ใช้ /IORQ + /WR</li>
+      <li>สร้าง /IORD = /IORQ OR /RD และ /IOWR = /IORQ OR /WR ก่อนรวมกับผล decode ของพอร์ต</li>
       <li>D7–D0 ของ Memory และ I/O ทุกตัวอยู่บน Data bus เดียวกัน</li>
     </ul>
   </section>
@@ -555,15 +569,15 @@
       </div>
       <p class="feedback" aria-live="polite"></p>
     </article>
-    <article class="card quiz-card" data-quiz data-answer="B" data-explain="/WR เป็นสัญญาณเขียน ส่วน /MREQ ถูกใช้ enable decoder ในวงจรนี้">
+    <article class="card quiz-card" data-quiz data-answer="B" data-explain="วงจร logic รวม /MREQ กับ /WR ได้ /MEMWR แล้วต่อ /MEMWR เข้าขา /WE ของ RAM">
       <div class="quiz-context">
         <strong>ดูทิศทางก่อนตอบ</strong>
-        <div class="mini-wire" aria-label="ขา WR ของ Z80 ต่อไปยังขา WE ของ RAM"><span>Z80 /WR</span><b aria-hidden="true">→</b><span>RAM /WE</span></div>
+        <div class="mini-wire" aria-label="MREQ และ WR ผ่าน logic gate สร้าง MEMWR แล้วต่อไปยัง WE ของ RAM"><span>/MREQ + /WR</span><b aria-hidden="true">→</b><span>/MEMWR → RAM /WE</span></div>
       </div>
-      <h3>2) ในวงจรที่ decoder ถูก enable ด้วย /MREQ ขาใดต่อเข้า /WE ของ RAM?</h3>
+      <h3>2) ในวงจรแบบในสื่อ สัญญาณใดต่อเข้า /WE ของ RAM?</h3>
       <div class="choices">
         <button class="choice mono" data-choice="A">/RD</button>
-        <button class="choice mono" data-choice="B">/WR</button>
+        <button class="choice mono" data-choice="B">/MEMWR</button>
         <button class="choice mono" data-choice="C">/MREQ</button>
         <button class="choice mono" data-choice="D">/IORQ</button>
       </div>

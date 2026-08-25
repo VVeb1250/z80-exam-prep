@@ -34,7 +34,7 @@
         <div class="swap-map"><div class="ram"><b>0000H–0FFFH</b><span>Y0 → RAM</span></div><div class="rom"><b>1000H–1FFFH</b><span>Y1 → ROM</span></div></div>
       </article>
     </div>
-    <div class="card callout"><p><strong>สิ่งที่ไม่เปลี่ยน:</strong> A11–A0 ยังเข้าขา Address ของทั้งสองชิป, D7–D0 ยังเป็น Data bus ร่วม, RAM ยังรับ /OE←/RD และ /WE←/WR ส่วน ROM รับ /OE←/RD</p></div>
+    <div class="card callout"><p><strong>สิ่งที่ไม่เปลี่ยน:</strong> A11–A0 ยังเข้าขา Address ของทั้งสองชิป, D7–D0 ยังเป็น Data bus ร่วม, RAM รับ <span class="mono">/OE←/MEMRD</span> และ <span class="mono">/WE←/MEMWR</span> ส่วน ROM รับ <span class="mono">/OE←/MEMRD</span> — เปลี่ยนเพียง Y0/Y1 ว่าไป /CE ของชิปใด</p></div>
   </section>
 
   <section id="access">
@@ -66,16 +66,13 @@
 
           <line x1="210" y1="325" x2="1160" y2="325" stroke="#087e8b" stroke-width="5" marker-end="url(#q6a)"/>
           <line x1="210" y1="385" x2="1160" y2="385" stroke="#7b3fa0" stroke-width="5" marker-start="url(#q6d)" marker-end="url(#q6d)"/>
-          <line x1="210" y1="440" x2="1160" y2="440" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
-          <line x1="210" y1="480" x2="1160" y2="480" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
-          <line x1="210" y1="520" x2="900" y2="520" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/>
           <text x="230" y="310" font-size="15" font-weight="900" fill="#087e8b" style="fill:#087e8b">ADDRESS BUS</text>
           <text x="230" y="370" font-size="15" font-weight="900" fill="#7b3fa0" style="fill:#7b3fa0">DATA BUS</text>
 
           <rect x="300" y="45" width="225" height="175" rx="15" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
           <text x="412" y="83" text-anchor="middle" font-size="22" font-weight="900">74x154</text>
           <text x="412" y="118" text-anchor="middle" font-size="15" class="mono-svg">A15–A12 → A3–A0</text>
-          <text x="412" y="148" text-anchor="middle" font-size="15" class="mono-svg">/MREQ → Enable</text>
+          <text x="412" y="148" text-anchor="middle" font-size="15" class="mono-svg">/E1,/E2 → GND</text>
           <text x="502" y="178" text-anchor="end" font-size="15" class="mono-svg">Y0</text>
           <text x="502" y="207" text-anchor="end" font-size="15" class="mono-svg">Y1</text>
 
@@ -83,14 +80,14 @@
           <text x="755" y="82" text-anchor="middle" font-size="23" font-weight="900">RAM 4K × 8</text>
           <text x="755" y="112" text-anchor="middle" font-size="15" class="mono-svg">0000H–0FFFH</text>
           <text x="670" y="145" font-size="14" class="mono-svg">/CE ← Y0</text>
-          <text x="670" y="174" font-size="14" class="mono-svg">/OE←/RD · /WE←/WR</text>
+          <text x="670" y="174" font-size="14" class="mono-svg">/OE←/MEMRD · /WE←/MEMWR</text>
           <text x="755" y="204" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
 
           <rect data-q6-device="rom" x="930" y="45" width="210" height="175" rx="15" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
           <text x="1035" y="82" text-anchor="middle" font-size="23" font-weight="900">ROM 4K × 8</text>
           <text x="1035" y="112" text-anchor="middle" font-size="15" class="mono-svg">1000H–1FFFH</text>
           <text x="950" y="145" font-size="14" class="mono-svg">/CE ← Y1</text>
-          <text x="950" y="174" font-size="14" class="mono-svg">/OE ← /RD</text>
+          <text x="950" y="174" font-size="14" class="mono-svg">/OE ← /MEMRD</text>
           <text x="1035" y="204" text-anchor="middle" font-size="14" class="mono-svg">A11–A0 · D7–D0</text>
 
           <path data-q6-select="ram" d="M525 175H650" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#q6s)"/>
@@ -107,10 +104,15 @@
           <path d="M800 220V385" fill="none" stroke="#fffef9" stroke-width="11"/><path d="M800 220V385" fill="none" stroke="#7b3fa0" stroke-width="4" marker-start="url(#q6d)" marker-end="url(#q6d)"/><circle cx="800" cy="385" r="5" fill="#7b3fa0"/>
           <path d="M1090 220V385" fill="none" stroke="#fffef9" stroke-width="11"/><path d="M1090 220V385" fill="none" stroke="#7b3fa0" stroke-width="4" marker-start="url(#q6d)" marker-end="url(#q6d)"/><circle cx="1090" cy="385" r="5" fill="#7b3fa0"/>
 
-          <path d="M510 440V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M510 440V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="510" cy="440" r="5" fill="#ad3152"/>
-          <path d="M830 480V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M830 480V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="830" cy="480" r="5" fill="#ad3152"/>
-          <path d="M850 520V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M850 520V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="850" cy="520" r="5" fill="#ad3152"/>
-          <path d="M1120 480V220" fill="none" stroke="#fffef9" stroke-width="10"/><path d="M1120 480V220" fill="none" stroke="#ad3152" stroke-width="3" marker-end="url(#q6c)"/><circle cx="1120" cy="480" r="5" fill="#ad3152"/>
+          <text x="285" y="414" font-size="14" font-weight="900">logic gate สร้าง named control nets</text>
+          <path d="M210 440H270V435H294M210 480H250V455H294" fill="none" stroke="#ad3152" stroke-width="3"/>
+          <circle cx="300" cy="435" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/><circle cx="300" cy="455" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <path d="M308 424H334C365 424 379 435 379 445C379 455 365 466 334 466H308C320 455 320 435 308 424Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/><circle cx="387" cy="445" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <text x="405" y="441" font-size="12" class="mono-svg">/MEMRD=/MREQ OR /RD</text><text x="405" y="458" font-size="12">→ /OE ของ RAM และ ROM</text>
+          <path d="M210 440H235V500H294M210 520H270V520H294" fill="none" stroke="#ad3152" stroke-width="3"/>
+          <circle cx="300" cy="500" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/><circle cx="300" cy="520" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <path d="M308 489H334C365 489 379 500 379 510C379 520 365 531 334 531H308C320 520 320 500 308 489Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/><circle cx="387" cy="510" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <text x="405" y="506" font-size="12" class="mono-svg">/MEMWR=/MREQ OR /WR</text><text x="405" y="523" font-size="12">→ /WE ของ RAM เท่านั้น</text>
 
           <text x="600" y="565" text-anchor="middle" font-size="17" font-weight="900">Address ปัจจุบัน: <tspan class="mono-svg" data-q6-field="address">0123H</tspan> · A15–A12=<tspan class="mono-svg" data-q6-field="high">0000</tspan> · offset=<tspan class="mono-svg" data-q6-field="offset">123H</tspan></text>
         </svg>

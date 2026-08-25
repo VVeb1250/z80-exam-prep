@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" role="img" aria-labelledby="title desc">
+  <title id="title">วงจรต่อประสาน Z80 กับ input buffer และ output latch</title>
+  <desc id="desc">แถวบนเป็นวงจรอ่าน Input port 84H แถวล่างเป็นวงจรเขียน Output port 07H พร้อม I/O decoder และ logic gates</desc>
+  <defs>
+    <style>text{font-family:"Leelawadee UI",Tahoma,sans-serif;fill:#17222b}.m{font-family:Consolas,monospace;font-weight:700}.wire{stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}.bus{stroke-width:5;fill:none;stroke-linecap:round}.bubble{fill:#fffef9;stroke-width:2.5}.pin{font-size:14px}.small{font-size:13px}</style>
+    <marker id="ia" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#087e8b"/></marker>
+    <marker id="id" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0L10 5L0 10z" fill="#7b3fa0"/></marker>
+  </defs>
+  <rect x="8" y="8" width="1184" height="684" rx="18" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+  <rect x="24" y="28" width="1152" height="306" rx="15" fill="#f8f5ed" stroke="#17222b" stroke-width="1.8"/>
+  <text x="48" y="63" font-size="21" font-weight="900">IN A,(84H) · อ่าน: ภายนอก → Buffer → CPU</text>
+  <rect x="48" y="90" width="165" height="212" rx="12" fill="#102e3b"/>
+  <text x="130" y="123" text-anchor="middle" font-size="21" font-weight="900" fill="white" style="fill:white">Z80</text>
+  <text x="195" y="158" text-anchor="end" class="m pin" fill="white" style="fill:white">A7–A0</text>
+  <text x="195" y="210" text-anchor="end" class="m pin" fill="white" style="fill:white">/IORQ</text>
+  <text x="195" y="244" text-anchor="end" class="m pin" fill="white" style="fill:white">/RD</text>
+  <text x="195" y="309" text-anchor="end" class="m pin" fill="white" style="fill:white">D7–D0</text>
+  <rect x="275" y="84" width="190" height="112" rx="11" fill="#dff0f5" stroke="#087e8b" stroke-width="2.5"/>
+  <text x="370" y="117" text-anchor="middle" font-size="19" font-weight="900">I/O Decoder</text>
+  <text x="292" y="150" class="m pin">A7–A0 → inputs</text>
+  <text x="445" y="181" text-anchor="end" class="m pin">/SEL84</text>
+  <path d="M213 154H275" stroke="#087e8b" class="bus" marker-end="url(#ia)"/>
+  <rect x="225" y="140" width="39" height="24" rx="5" fill="#fffef9" stroke="#087e8b"/><text x="244" y="157" text-anchor="middle" class="m small">8</text>
+  <path d="M213 206H500M213 240H500" stroke="#ad3152" class="wire"/>
+  <circle cx="510" cy="206" r="7" class="bubble" stroke="#ad3152"/><circle cx="510" cy="240" r="7" class="bubble" stroke="#ad3152"/>
+  <path d="M518 198H544C572 198 584 213 584 223C584 233 572 248 544 248H518C530 235 530 211 518 198Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="592" cy="223" r="7" class="bubble" stroke="#ad3152"/>
+  <text x="545" y="278" text-anchor="middle" class="m small">/IORD=/IORQ OR /RD</text>
+  <path d="M465 176H665M599 223H640V210H665" stroke="#4774b8" class="wire"/>
+  <circle cx="675" cy="176" r="7" class="bubble" stroke="#ad3152"/><circle cx="675" cy="210" r="7" class="bubble" stroke="#ad3152"/>
+  <path d="M683 168H709C737 168 749 183 749 193C749 203 737 218 709 218H683C695 205 695 181 683 168Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="757" cy="193" r="7" class="bubble" stroke="#ad3152"/>
+  <text x="690" y="247" text-anchor="middle" class="m small">/OE_IN=/SEL84 OR /IORD</text>
+  <rect x="840" y="80" width="300" height="218" rx="12" fill="#e8f4f1" stroke="#2f7565" stroke-width="3"/>
+  <text x="990" y="116" text-anchor="middle" font-size="22" font-weight="900">74LS244 Input Buffer</text>
+  <text x="858" y="158" class="m pin">/OE</text><circle cx="840" cy="153" r="5" class="bubble" stroke="#2f7565"/>
+  <text x="858" y="205" class="m pin">Y7–Y0 → D7–D0</text>
+  <text x="1122" y="258" text-anchor="end" class="m pin">A7–A0 ← switches</text>
+  <path d="M764 193H815V153H835" stroke="#ad3152" class="wire"/>
+  <path d="M840 201H805V305H213" stroke="#7b3fa0" class="bus" marker-end="url(#id)"/>
+  <path d="M1140 254H1160" stroke="#17222b" class="wire"/>
+
+  <rect x="24" y="354" width="1152" height="318" rx="15" fill="#f8f5ed" stroke="#17222b" stroke-width="1.8"/>
+  <text x="48" y="389" font-size="21" font-weight="900">OUT (07H),A · เขียน: CPU → Latch → LEDs</text>
+  <rect x="48" y="416" width="165" height="224" rx="12" fill="#102e3b"/>
+  <text x="130" y="450" text-anchor="middle" font-size="21" font-weight="900" fill="white" style="fill:white">Z80</text>
+  <text x="195" y="486" text-anchor="end" class="m pin" fill="white" style="fill:white">A7–A0</text>
+  <text x="195" y="538" text-anchor="end" class="m pin" fill="white" style="fill:white">/IORQ</text>
+  <text x="195" y="572" text-anchor="end" class="m pin" fill="white" style="fill:white">/WR</text>
+  <text x="195" y="638" text-anchor="end" class="m pin" fill="white" style="fill:white">D7–D0</text>
+  <rect x="275" y="410" width="190" height="112" rx="11" fill="#dff0f5" stroke="#087e8b" stroke-width="2.5"/>
+  <text x="370" y="443" text-anchor="middle" font-size="19" font-weight="900">I/O Decoder</text>
+  <text x="292" y="476" class="m pin">A7–A0 → inputs</text>
+  <text x="445" y="507" text-anchor="end" class="m pin">/SEL07</text>
+  <path d="M213 482H275" stroke="#087e8b" class="bus" marker-end="url(#ia)"/>
+  <rect x="225" y="468" width="39" height="24" rx="5" fill="#fffef9" stroke="#087e8b"/><text x="244" y="485" text-anchor="middle" class="m small">8</text>
+  <path d="M213 534H500M213 568H500" stroke="#ad3152" class="wire"/>
+  <circle cx="510" cy="534" r="7" class="bubble" stroke="#ad3152"/><circle cx="510" cy="568" r="7" class="bubble" stroke="#ad3152"/>
+  <path d="M518 526H544C572 526 584 541 584 551C584 561 572 576 544 576H518C530 563 530 539 518 526Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <circle cx="592" cy="551" r="7" class="bubble" stroke="#ad3152"/>
+  <text x="545" y="606" text-anchor="middle" class="m small">/IOWR=/IORQ OR /WR</text>
+  <path d="M465 502H665M599 551H640V536H665" stroke="#4774b8" class="wire"/>
+  <circle cx="675" cy="502" r="7" class="bubble" stroke="#ad3152"/><circle cx="675" cy="536" r="7" class="bubble" stroke="#ad3152"/>
+  <path d="M683 494H709C737 494 749 509 749 519C749 529 737 544 709 544H683C695 531 695 507 683 494Z" fill="#f8dfe7" stroke="#ad3152" stroke-width="2.5"/>
+  <text x="690" y="574" text-anchor="middle" class="m small">LE_OUT=NOT(/SEL07 OR /IOWR)</text>
+  <rect x="840" y="406" width="300" height="234" rx="12" fill="#fff0d1" stroke="#b55c00" stroke-width="3"/>
+  <text x="990" y="442" text-anchor="middle" font-size="22" font-weight="900">74LS373 Output Latch</text>
+  <text x="858" y="486" class="m pin">LE</text><text x="858" y="535" class="m pin">D7–D0 ← Data bus</text>
+  <text x="1122" y="596" text-anchor="end" class="m pin">Q7–Q0 → LEDs</text>
+  <path d="M749 519H840" stroke="#ad3152" class="wire"/>
+  <path d="M213 634H805V531H840" stroke="#7b3fa0" class="bus" marker-end="url(#id)"/>
+  <path d="M1140 592H1160" stroke="#17222b" class="wire"/>
+  <text x="48" y="660" class="small">วงกลมเล็ก = active-low · เกตสุดท้ายของ OUT ไม่มีวงกลมขาออก จึงสร้าง LE ที่ active-high</text>
+</svg>

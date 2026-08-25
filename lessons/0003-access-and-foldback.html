@@ -38,7 +38,7 @@
       </div>
 
       <div class="lab-circuit-wrap" tabindex="0" aria-label="วงจรทดลอง Foldback เลื่อนซ้ายขวาได้">
-        <svg class="lab-circuit" data-lab-circuit viewBox="0 0 1000 410" role="img" aria-labelledby="fold-circuit-title fold-circuit-desc">
+        <svg class="lab-circuit" data-lab-circuit viewBox="0 0 1000 490" role="img" aria-labelledby="fold-circuit-title fold-circuit-desc">
           <title id="fold-circuit-title">วงจร Full และ Partial address decoding</title>
           <desc id="fold-circuit-desc">Full decoding ต่อ A15 ถึง A12 เข้า 74x154 ส่วน Partial decoding ไม่ต่อ A15 ถึง A13 และใช้เพียง A12 เลือก ROM RAM</desc>
           <defs>
@@ -46,17 +46,19 @@
             <marker id="fs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#4774b8"/></marker>
             <marker id="fc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ad3152"/></marker>
           </defs>
-          <rect x="12" y="12" width="976" height="386" rx="18" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
+          <rect x="12" y="12" width="976" height="466" rx="18" fill="#fffef9" stroke="#17222b" stroke-width="2"/>
 
-          <rect x="38" y="105" width="180" height="220" rx="15" fill="#102e3b"/>
+          <rect x="38" y="105" width="180" height="315" rx="15" fill="#102e3b"/>
           <text x="128" y="145" text-anchor="middle" font-size="25" font-weight="900" fill="white" style="fill:white">Z80</text>
           <text x="198" y="184" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">A15–A12</text>
-          <text x="198" y="226" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
           <text x="198" y="286" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">A11–A0</text>
+          <text x="198" y="342" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">/MREQ</text>
+          <text x="198" y="374" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">/RD</text>
+          <text x="198" y="406" text-anchor="end" font-size="15" class="mono-svg" fill="white" style="fill:white">/WR</text>
 
           <rect x="350" y="105" width="240" height="170" rx="15" fill="#f8dfe7" stroke="#ad3152" stroke-width="3"/>
           <text x="470" y="153" text-anchor="middle" font-size="23" font-weight="900" data-lab-field="decoderTitle">74x154</text>
-          <text x="470" y="190" text-anchor="middle" font-size="16" class="mono-svg" data-lab-field="decoderDetail">ใช้ A15–A12 + /MREQ</text>
+          <text x="470" y="190" text-anchor="middle" font-size="16" class="mono-svg" data-lab-field="decoderDetail">decode A15–A12 ครบ 4 บิต</text>
           <text x="566" y="226" text-anchor="end" font-size="15" class="mono-svg" data-lab-field="romOut">Y0</text>
           <text x="566" y="258" text-anchor="end" font-size="15" class="mono-svg" data-lab-field="ramOut">Y1</text>
 
@@ -66,22 +68,26 @@
             <path d="M218 165H285" fill="none" stroke="#ad3152" stroke-width="4"/>
             <path d="M286 151L310 175M310 151L286 175" fill="none" stroke="#ad3152" stroke-width="5"/>
             <text x="260" y="147" text-anchor="middle" font-size="14" class="mono-svg" fill="#ad3152" style="fill:#ad3152">A15–A13</text>
+            <path d="M382 225L432 248L382 271Z" fill="#fffef9" stroke="#ad3152" stroke-width="2.5"/>
+            <circle cx="440" cy="248" r="8" fill="#fffef9" stroke="#ad3152" stroke-width="2.5"/>
+            <text x="402" y="238" text-anchor="middle" font-size="12" class="mono-svg">A12</text><text x="468" y="238" text-anchor="middle" font-size="12" class="mono-svg">/A12</text>
           </g>
 
           <path data-full-only d="M218 183H350" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#fa)"/>
           <text data-full-only x="284" y="170" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A15–A12</text>
           <path data-partial-only d="M218 190H350" fill="none" stroke="#087e8b" stroke-width="5" marker-end="url(#fa)"/>
           <text data-partial-only x="284" y="210" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">ต่อเฉพาะ A12</text>
-          <path d="M218 226H330V232H350" fill="none" stroke="#ad3152" stroke-width="4" marker-end="url(#fc)"/>
 
           <rect class="chip-body" data-chip="rom" x="700" y="48" width="230" height="135" rx="15" fill="#e5f0df" stroke="#416b39" stroke-width="3"/>
           <text x="815" y="88" text-anchor="middle" font-size="25" font-weight="900">ROM 4K</text>
-          <text x="815" y="122" text-anchor="middle" font-size="15" class="mono-svg">/CE_ROM</text>
-          <text x="815" y="153" text-anchor="middle" font-size="14" class="mono-svg">offset = A11–A0</text>
+          <text x="720" y="122" font-size="14" class="mono-svg">/CE</text>
+          <text x="720" y="150" font-size="14" class="mono-svg">/OE ← /MEMRD</text>
+          <text x="815" y="174" text-anchor="middle" font-size="13" class="mono-svg">A0–A11 ← offset</text>
           <rect class="chip-body" data-chip="ram" x="700" y="227" width="230" height="135" rx="15" fill="#e2e9f8" stroke="#536fa8" stroke-width="3"/>
           <text x="815" y="267" text-anchor="middle" font-size="25" font-weight="900">RAM 4K</text>
-          <text x="815" y="301" text-anchor="middle" font-size="15" class="mono-svg">/CE_RAM</text>
-          <text x="815" y="332" text-anchor="middle" font-size="14" class="mono-svg">offset = A11–A0</text>
+          <text x="720" y="297" font-size="14" class="mono-svg">/CE</text>
+          <text x="720" y="324" font-size="14" class="mono-svg">/OE ← /MEMRD</text>
+          <text x="720" y="351" font-size="14" class="mono-svg">/WE ← /MEMWR</text>
 
           <path class="select-wire" data-select-rom d="M590 220H635V115H700" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#fs)"/>
           <path class="select-wire" data-select-ram d="M590 252H635V294H700" fill="none" stroke="#4774b8" stroke-width="4" marker-end="url(#fs)"/>
@@ -90,7 +96,15 @@
           <circle cx="620" cy="286" r="6" fill="#087e8b"/>
           <text x="420" y="307" text-anchor="middle" font-size="14" class="mono-svg" fill="#087e8b" style="fill:#087e8b">A11–A0 เข้าทั้งสองชิปตรง ๆ</text>
 
-          <text x="815" y="390" text-anchor="middle" font-size="16" font-weight="900">Address ที่กำลังทดลอง: <tspan class="mono-svg" data-lab-field="address">2123H</tspan> · A15–A12 = <tspan class="mono-svg" data-lab-field="highBits">0010</tspan></text>
+          <rect x="330" y="326" width="295" height="105" rx="12" fill="#f8dfe7" stroke="#ad3152" stroke-width="2"/>
+          <text x="477" y="352" text-anchor="middle" font-size="16" font-weight="900">logic gate คุมการอ่าน–เขียน</text>
+          <circle cx="373" cy="377" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/><circle cx="373" cy="391" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <path d="M381 366H410C440 366 451 377 451 384C451 391 440 402 410 402H381C393 391 393 377 381 366Z" fill="#fffef9" stroke="#ad3152" stroke-width="2"/><circle cx="459" cy="384" r="6" fill="#fffef9" stroke="#ad3152" stroke-width="2"/>
+          <text x="474" y="389" font-size="13" class="mono-svg">/MEMRD = /MREQ OR /RD → /OE</text>
+          <text x="365" y="420" font-size="13" class="mono-svg">/MEMWR = /MREQ OR /WR → RAM /WE</text>
+          <path d="M218 340H310V377H367M218 372H300V391H367M218 404H320V418H350" fill="none" stroke="#ad3152" stroke-width="3"/>
+
+          <text x="690" y="454" text-anchor="middle" font-size="14" font-weight="900">Address ที่กำลังทดลอง: <tspan class="mono-svg" data-lab-field="address">2123H</tspan> · A15–A12 = <tspan class="mono-svg" data-lab-field="highBits">0010</tspan></text>
         </svg>
       </div>
       <p class="scroll-hint">← บนโทรศัพท์ลากวงจรซ้าย–ขวาได้ โดยรูปและสายไม่ถูกบีบ →</p>
