@@ -47,6 +47,7 @@
     const list = lab.querySelector('[data-op-list]');
     const tape = lab.querySelector('[data-byte-tape]');
     const byteChips = lab.querySelector('[data-op-bytes]');
+    const opcodeDecoder = lab.querySelector('[data-opcode-decoder]');
     const relativePanel = lab.querySelector('[data-relative-panel]');
     const previous = lab.querySelector('[data-op-prev]');
     const next = lab.querySelector('[data-op-next]');
@@ -63,6 +64,10 @@
       previous.disabled = current === 0;
       next.disabled = current === program.rows.length - 1;
       byteChips.innerHTML = row.bytes.map((byte, index) => `<span><small>${index ? 'operand' : 'opcode'}</small><b>${byte}H</b></span>`).join('');
+      if (opcodeDecoder) {
+        opcodeDecoder.dataset.opcode = row.bytes[0];
+        opcodeDecoder.dispatchEvent(new CustomEvent('opcodechange', { detail: { opcode: row.bytes[0] } }));
+      }
       relativePanel.hidden = !row.relative;
       if (row.relative) Object.entries(row.relative).forEach(([key, value]) => { fields[key].textContent = value; });
 

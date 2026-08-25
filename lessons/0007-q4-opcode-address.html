@@ -55,6 +55,25 @@
             <strong class="mono" data-op-field="asm">LD A,01H</strong>
             <div class="byte-chips" data-op-bytes></div>
           </div>
+          <div class="inline-opcode-decoder" data-opcode-decoder data-opcode="3E">
+            <div class="decoder-output" aria-live="polite">
+              <div class="decoder-heading">
+                <small>ถอด Opcode ตัวแรกของคำสั่งนี้</small>
+                <span class="phase-badge" data-decoder-field="pattern">00 ddd 110</span>
+                <h3><span class="mono" data-decoder-field="hex">3EH</span> = <span data-decoder-field="mnemonic">LD A,n</span></h3>
+              </div>
+              <div class="bit-diagram">
+                <div class="bit-cells" data-bit-cells aria-label="บิต 7 ถึง 0"></div>
+                <div class="bit-index" aria-hidden="true"><span>7</span><span>6</span><span>5</span><span>4</span><span>3</span><span>2</span><span>1</span><span>0</span></div>
+                <div class="field-strip" data-field-strip></div>
+              </div>
+              <div class="decoder-reading">
+                <p data-decoder-field="reading">รูปแบบ 00 ddd 110 คือ LD r,n; ddd=111 เลือก A และ n อยู่ใน byte ถัดไป</p>
+                <div class="decoder-direction" data-decoder-direction><span>A</span><b>รับค่าจาก ←</b><span>n</span></div>
+                <p class="decoder-next" data-decoder-field="next">ยาว 2 bytes: 3EH เป็น Opcode แล้ว byte ถัดไปเป็นข้อมูล 8-bit n</p>
+              </div>
+            </div>
+          </div>
           <div class="address-equation">
             <div><small>เริ่ม</small><b class="mono" data-op-field="address">2000H</b></div><span>+</span><div><small>ขนาด</small><b data-op-field="size">2 bytes</b></div><span>=</span><div><small>คำสั่งถัดไป</small><b class="mono" data-op-field="next">2002H</b></div>
           </div>
@@ -99,6 +118,10 @@
       <h3>4) บรรทัดใดไม่มี Opcode?</h3>
       <div class="choices"><button class="choice" data-choice="A">ORG 2000H</button><button class="choice" data-choice="B">XOR A</button><button class="choice" data-choice="C">INC A</button><button class="choice" data-choice="D">HALT</button></div><p class="feedback" aria-live="polite"></p>
     </article>
+    <article class="card quiz-card" data-quiz data-answer="C" data-explain="47H = 01 000 111 ตามรูปแบบ 01 ddd sss; ddd=000 คือ B และ sss=111 คือ A จึงอ่านเป็น LD B,A">
+      <h3>5) 47H แยกเป็น 01 000 111 แล้วอ่านเป็นคำสั่งใด?</h3>
+      <div class="choices"><button class="choice mono" data-choice="A">LD A,B</button><button class="choice mono" data-choice="B">ADD A,B</button><button class="choice mono" data-choice="C">LD B,A</button><button class="choice mono" data-choice="D">LD B,47H</button></div><p class="feedback" aria-live="polite"></p>
+    </article>
   </section>
 
   <footer class="footer">
@@ -108,6 +131,7 @@
   </footer>
 </main>
 <script src="../assets/opcode-lab.js"></script>
+<script src="../assets/opcode-decoder.js"></script>
 <script src="../assets/quiz.js"></script>
 </body>
 </html>
